@@ -7,7 +7,7 @@ Astronomical datasets are recorded in multiple coordinate systems (e.g., ICRS, G
 This project explores how to:
 - Work with real star catalog data
 - Transform coordinates between reference frames using Astropy
-- Visulaize stellar distributions across the sky
+- Visualize stellar distributions across the sky
 - Identify and correct data-related issues such as sampling bias
 
 ## Objectives
@@ -101,6 +101,14 @@ This highlights the importance of __representative sampling in scientific analys
 
 ---
 
+## Example Visualizations
+### Sky Distribution in RA/Dec Space
+![Biased and Random Sample](./outputs/biased_and_random_samples.png)
+### Magnitude Hexbin Analysis
+![Hexbin Magnitude](./outputs/random_sample_hexbin_mag_colour_linear-stretch.png)
+
+---
+
 ## Next Steps and Planned Features
 - Aitoff projection in Galactic coordinates
 - Color-Magnitude Diagram (CMD)
@@ -110,6 +118,8 @@ This highlights the importance of __representative sampling in scientific analys
 ---
 
 ## Project structure
+
+```text
 stellar_explorer
  |
  |------ app/
@@ -122,7 +132,7 @@ stellar_explorer
  |       |---- gaia_subset_random.fits
  |       |---- stars_with_galactic_coord_biased.fits
  |       |---- stars_with_galactic_coord_random.fits      
- |-------notebooks/
+ |------ notebooks/
  |       |---- learning/
  |       |     |---- 01_quantities.ipynb
  |       |     |---- 02_coordinates.ipynb
@@ -132,7 +142,9 @@ stellar_explorer
  |       |     |---- 06_load_and_inspect_random.ipynb
  |       |     |---- 07_coord_transform_random.ipynb
  |       |     |---- 08_viz_random.ipynb
- |       |     |---- 09_color_magnitude_random.ipynb
+ |       |     |---- 09_colour_magnitude_random.ipynb
  |       |---- stellar_coordinate_explorer.ipynb
- |-------outputs
- |-------README.md
+ |------ outputs/
+ |       |---- images 
+ |------ README.md
+ ```
