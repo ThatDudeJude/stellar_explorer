@@ -79,18 +79,23 @@ This highlights the importance of __representative sampling in scientific analys
 - Generated corrected plots using random sampling
 
 ### Magnitude Analysis
-- Encoded stellar magnitude as color in scatter plots
+- Encoded stellar magnitude as color in scatter plots using linear and logarithmic scaling
 - Used hexbin aggregation to analyze spatial trends
 - Observed weak spatial dependence of brightness
+
+### Aitoff All-Sky Projection
+- Produced full-sky Aitoff projections on both equitorial and Galactic coordinates
+- Observed the effect of close proximity sampling on plotted Galactic structure
 
 ---
 
 ## Key Findings
-- Sampling method strongly affects spatial interpretation
-- The Milky Way appears as a dense band in sky distributions
+- Sampling method strongly affects observed spatial structure and interpretation
+- No-random database selection introduced artificial geometric structure
+- Randomized sampling reveals a physically meaningful sky distribution
 - Stellar magnitude does not show strong spatial structure in this sample
-- Aggregation methods (e.g., hexbin) help reveal subtle trends
-
+- Aggregation methods (e.g., hexbin) help reveal subtle trends in noisy datasets
+- The local stellar volume appears relatively isotropic in both equitorial and Galactic coordinates
 ---
 
 ## Limitations
@@ -107,13 +112,15 @@ This highlights the importance of __representative sampling in scientific analys
 ### Magnitude Hexbin Analysis
 ![Hexbin Magnitude](./outputs/random_sample_hexbin_mag_colour_linear-stretch.png)
 
+### Aitoff projection in ICRS and Galactic coordinates
+![Aitoff Projection in both ICRS and Galactic coordinates](./outputs/aitoff_projection_icrs_galactic_coord.png)
 ---
 
 ## Next Steps and Planned Features
-- Aitoff projection in Galactic coordinates
+- Statistical analysis of stellar properties
 - Color-Magnitude Diagram (CMD)
-- Hypothesis testing (e.g., brightness vs distance)
-- Interactive dashboard using Streamlit
+- Hypothesis testing (brightness vs distance)
+- Interactive dashboard using Streamlit for sky exploration
 
 ---
 
@@ -143,6 +150,7 @@ stellar_explorer
  |       |     |---- 07_coord_transform_random.ipynb
  |       |     |---- 08_viz_random.ipynb
  |       |     |---- 09_colour_magnitude_random.ipynb
+ |       |     |---- 10_aitoff_sky_map.ipynb
  |       |---- stellar_coordinate_explorer.ipynb
  |------ outputs/
  |       |---- images 
