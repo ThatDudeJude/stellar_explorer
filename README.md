@@ -1,11 +1,11 @@
 # Stellar Coordinate Explorer
-A Python-based project for analyzing and visualizing stellar positions using real data from the Gaia mission. Its main focus is on coordinate transformations, spatial distributions and data interpretation.
+A Python-based project for analyzing and visualizing stellar positions using real data on stellar sources from the Gaia mission. Its main focus is on coordinate transformations, spatial distributions and data interpretation.
 
 ## Project Overview
 Astronomical datasets are recorded in multiple coordinate systems (e.g., ICRS, Galactic) and transforming between them is essential for understanding spatial structure.
 
 This project explores how to:
-- Work with real star catalog data
+- Work with real stellar sources catalog data
 - Transform coordinates between reference frames using Astropy
 - Visualize stellar distributions across the sky
 - Identify and correct data-related issues such as sampling bias
@@ -13,8 +13,8 @@ This project explores how to:
 ## Objectives
 - Transform stellar coordinates (ICRS &rarr; Galactic)
 - Load and process real Gaia DR3 data
-- Generate meaningful visualizations of star positions
-- Analyze spatial and photometric properties of stars
+- Generate meaningful visualizations of source positions
+- Analyze spatial and photometric properties of stellar sources
 - Build a structured, reproducible data analysis workflow
 
 ---
@@ -23,9 +23,9 @@ This project explores how to:
 Data is obtained from the Gaia Archive (ESA mission):
 - Catalog: gaiadr3.gaia_source
 - Selection criteria:
-  - `phot_g_mean_mag < 10` (bright stars)
-  - `parallax > 5` (nearby stars, ~ within $200\ pc$)
-  - Sample size: $10,000$ stars
+  - `phot_g_mean_mag < 10` (bright sources)
+  - `parallax > 5` (nearby sources, ~ within $200\ pc$)
+  - Sample size: $10,000$ stellar sources
 
 Two sampling approaches were used:
 1. __Biased sample__
@@ -37,17 +37,9 @@ Two sampling approaches were used:
 
 ---
 ## Key Insight: Sampling Bias
-Initial visualizations showed geometric clustering in RA/Dec space.
-
-This was traced to the query method:
-- `TOP 10000` returns the first rows in the database
-- This introduces spatial bias
-
-After switching to random sampling:
-- The sky distribution became continuous
-- The Milky Way structure emerged clearly
-
-This highlights the importance of __representative sampling in scientific analysis__.
+- Initial visualizations showed geometric clustering in RA/Dec space. 
+- This bias was traced to the query method that used `TOP 10000` which retrieves the first rows in the database.
+- After switching to random sampling, the sky distribution became continuous and isometric, highlighting the importance of __representative sampling in scientific analysis__.
 
 ## Methods
 
@@ -65,7 +57,7 @@ This highlights the importance of __representative sampling in scientific analys
 ---
 
 ## Current Progress
-### Data Loading & Inspection
+### Data Loading and Inspection
 - Loaded Gaia FITS data using Astropy Tables
 - Explored structure and filtered relevant columns
 
@@ -100,7 +92,7 @@ This highlights the importance of __representative sampling in scientific analys
 
 ## Limitations
 - Small sample size (10,000 stars).
-- Limited to nearby stars (parallax $\gt$ 5).
+- Limited to nearby sources (parallax $\gt$ 5).
 - No correction for interstellar extinction.
 - Analysis currently limited to basic statistical methods.
 
