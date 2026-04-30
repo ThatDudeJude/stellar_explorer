@@ -1,5 +1,5 @@
 # Stellar Coordinate Explorer
-A Python-based project for analyzing and visualizing stellar positions using real data from the Gaia mission. It's main focus is on coordinate transformations, spatial distributions and data interpretation.
+A Python-based project for analyzing and visualizing stellar positions using real data from the Gaia mission. Its main focus is on coordinate transformations, spatial distributions and data interpretation.
 
 ## Project Overview
 Astronomical datasets are recorded in multiple coordinate systems (e.g., ICRS, Galactic) and transforming between them is essential for understanding spatial structure.
@@ -90,19 +90,19 @@ This highlights the importance of __representative sampling in scientific analys
 ---
 
 ## Key Findings
-- Sampling method strongly affects observed spatial structure and interpretation
-- No-random database selection introduced artificial geometric structure
-- Randomized sampling reveals a physically meaningful sky distribution
-- Stellar magnitude does not show strong spatial structure in this sample
-- Aggregation methods (e.g., hexbin) help reveal subtle trends in noisy datasets
-- The local stellar volume appears relatively isotropic in both equitorial and Galactic coordinates
+- Sampling method strongly affects observed spatial structure and interpretation.
+- No-random database selection introduced artificial geometric structure.
+- Randomized sampling reveals a physically meaningful sky distribution.
+- Stellar magnitude does not show strong spatial structure in this sample.
+- Aggregation methods (e.g., hexbin) help reveal subtle trends in noisy datasets.
+- The local stellar volume appears relatively isotropic in both equitorial and Galactic coordinates.
 ---
 
 ## Limitations
-- Small sample size (10,000 stars)
-- Limited to nearby stars (parallax $\gt$ 5)
-- No correction for interstellar extinction
-- Analysis currently limited to basic statistical methods
+- Small sample size (10,000 stars).
+- Limited to nearby stars (parallax $\gt$ 5).
+- No correction for interstellar extinction.
+- Analysis currently limited to basic statistical methods.
 
 ---
 
