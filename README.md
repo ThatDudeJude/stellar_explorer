@@ -1,118 +1,106 @@
 # Stellar Coordinate Explorer
-A Python-based project for analyzing and visualizing stellar positions using real data on stellar sources from the Gaia mission. Its main focus is on coordinate transformations, spatial distributions and data interpretation.
+A Python-based astronomy data-analysis project exploring stellar coordinate systems, Gaia DR3 catalog data, and scientific visualization using Astropy.
+
+---
 
 ## Project Overview
-Astronomical datasets are recorded in multiple coordinate systems (e.g., ICRS, Galactic) and transforming between them is essential for understanding spatial structure.
+Astronomical datasets are recorded in multiple coordinate systems (e.g., ICRS, Galactic) and transforming between them is essential for understanding spatial structure and physical properties of stars.
 
-This project explores how to:
-- Work with real stellar sources catalog data
-- Transform coordinates between reference frames using Astropy
-- Visualize stellar distributions across the sky
-- Identify and correct data-related issues such as sampling bias
+This project uses real Gaia DR3 data to:
+- Transform stellar coordinates between reference frames using Astropy
+- Explore stellar distributions using statistical distribution
+- Construct colour-magnitude and Hertzsprung-Russell diagrams
+- Investigate observational selection effects in nearby stellar samples
+
+---
 
 ## Objectives
-- Transform stellar coordinates (ICRS &rarr; Galactic)
-- Load and process real Gaia DR3 data
-- Generate meaningful visualizations of source positions
-- Analyze spatial and photometric properties of stellar sources
-- Build a structured, reproducible data analysis workflow
+- Load and process real Gaia DR3 catalog data using Astropy Tables
+- Transform stellar coordinates between ICRS and Galactic frames
+- Generate meaningful visualizations of source positions using astronomical sky maps 
+- Explore stellar population using photometric properties and statistical visualizations
+- Build a structured, reproducible astronomy data analysis workflow
 
 ---
+
 ## Data Source
 
-Data is obtained from the Gaia Archive (ESA mission):
-- Catalog: gaiadr3.gaia_source
-- Selection criteria:
-  - `phot_g_mean_mag < 10` (bright sources)
+Data is obtained from the Gaia Archive DR3 sources selected with:
+- Apparent G-band magnitude:
+  - `phot_g_mean_mag < 10` (mainly moderately bright and faint sources)
+- Parallax
   - `parallax > 5` (nearby sources, ~ within $200\ pc$)
-  - Sample size: $10,000$ stellar sources
+- Sample size: $10,000$ stellar sources
 
-Two sampling approaches were used:
-1. __Biased sample__
-   - Selected using `TOP 10000`
-   - Resulted in uneven sky coverage
-2. __Random sample (corrected)__
-   - Selected using `ORDER BY random_index`
-   - Produces uniform sky coverage
+This approximately limits the sample to sources within $\approx 200$ parsecs of Earth.
 
 ---
-## Key Insight: Sampling Bias
-- Initial visualizations showed geometric clustering in RA/Dec space. 
-- This bias was traced to the query method that used `TOP 10000` which retrieves the first rows in the database.
-- After switching to random sampling, the sky distribution became continuous and isometric, highlighting the importance of __representative sampling in scientific analysis__.
 
-## Methods
+## Sample Characteristics
 
-### Coordinate Systems
-- ICRS (RA, Dec)
-- Galactic coordinates (l, b)
+The dataset is dominated by nearby main-sequence stars in the solar neighbourhood. Analysis of the colour index and absolute magnitude distributions suggests the sample
+primarily contains:
+- Late F-type stars
+- G-type stars
+- Early K-type dwarf stars
 
+The selection criteria also introduces important observational biases:
+- Very faint stars are underrepresented due to the magnitude limit
+- Distant Galactic plane structure is less visible because the sample probes mostly nearby stars
 
-### Tools and Libraris
+## Tools and Technologies
 - Python
 - Astropy
 - Numpy
 - Matplotlib
+- Jupyter Notebook
+- Streamlit (planned)
 
 ---
 
-## Current Progress
-### Data Loading and Inspection
-- Loaded Gaia FITS data using Astropy Tables
-- Explored structure and filtered relevant columns
+## Visualizations and Analysis
 
-### Coordinate Transformation
-- Converted RA/Dec &rarr; Galactic coordinates
-- Added transformed coordinates to dataset
+Current visualizations include:
 
-### Sky Visualization
-- Created RA vs Dec scatter plots
-- Identified sampling bias in initial dataset
-- Generated corrected plots using random sampling
-
-### Magnitude Analysis
-- Encoded stellar magnitude as color in scatter plots using linear and logarithmic scaling
-- Used hexbin aggregation to analyze spatial trends
-- Observed weak spatial dependence of brightness
-
-### Aitoff All-Sky Projection
-- Produced full-sky Aitoff projections on both equitorial and Galactic coordinates
-- Observed the effect of close proximity sampling on plotted Galactic structure
+- ICRS sky-position scatter plots
+- Colour-coded stellar maps
+- Hexbin density visualizations
+- Full-sky Aitoff projections
+- Apparent magnitude distributions
+- Absolute magnitude distributions
+- Parallax histograms
+- BP-RP colour index distributions
+- Hertzsprung-Russell diagrams
+- Colour-magnitude diagrams using absolute magnitude
 
 ---
 
-## Key Findings
-- Sampling method strongly affects observed spatial structure and interpretation.
-- No-random database selection introduced artificial geometric structure.
-- Randomized sampling reveals a physically meaningful sky distribution.
-- Stellar magnitude does not show strong spatial structure in this sample.
-- Aggregation methods (e.g., hexbin) help reveal subtle trends in noisy datasets.
-- The local stellar volume appears relatively isotropic in both equitorial and Galactic coordinates.
----
+### Key Findings
+- The sky distribution of nearby stars appears approximately isotropic, with no strong concentration along the Galactic plane.
+- The sample is dominated by nearby solar-neighbourhood stars and is limited by magnitude selection.
+- The colour index distribution peaks around BP-RP $\approx 0.6-1.0$, consistent with moderately cool dwarf and sun-like stars.
+- The absolute magnitude distribution peaks around $M_{G}\approx 3-5$, broadly matching late F-, G-, and early K-type main-sequence stars.
+- Bayesian Blocks adaptive histograms reveal changes in local data density more effectively than fixed-width histograms.
 
-## Limitations
-- Small sample size (10,000 stars).
-- Limited to nearby sources (parallax $\gt$ 5).
-- No correction for interstellar extinction.
-- Analysis currently limited to basic statistical methods.
+### Featured Visualizations
+- Full-sky Aitoff projections (ICRS and Galactic)
+![Full-sky Aitoff Projection](./outputs/aitoff_projection_icrs_galactic_coord.png)
+- BP-RP colour index distributions
+![BP-RP colour index distribution](./outputs/bp-rp_distribution.png)
+- Absolute magnitude distributions
+![Absolute magnitude distributions](./outputs/abs_mag_distribution.png)
+- Hertzsprung-Russell diagrams
+![Hertzsprung-Russell diagrams](./outputs/hertzsprung-russel_diagrams.png)
 
----
-
-## Example Visualizations
-### Sky Distribution in RA/Dec Space
-![Biased and Random Sample](./outputs/biased_and_random_samples.png)
-### Magnitude Hexbin Analysis
-![Hexbin Magnitude](./outputs/random_sample_hexbin_mag_colour_linear-stretch.png)
-
-### Aitoff projection in ICRS and Galactic coordinates
-![Aitoff Projection in both ICRS and Galactic coordinates](./outputs/aitoff_projection_icrs_galactic_coord.png)
 ---
 
 ## Next Steps and Planned Features
-- Statistical analysis of stellar properties
-- Color-Magnitude Diagram (CMD)
 - Hypothesis testing (brightness vs distance)
-- Interactive dashboard using Streamlit for sky exploration
+- Interactive dashboard using Streamlit
+- Coordinate-system toggle (ICRS &rarr; Galactic)
+- Interactive magnitude filtering
+- Plotly-based interactive sky maps
+- Exportable plots and analysis summaries
 
 ---
 
@@ -143,6 +131,7 @@ stellar_explorer
  |       |     |---- 08_viz_random.ipynb
  |       |     |---- 09_colour_magnitude_random.ipynb
  |       |     |---- 10_aitoff_sky_map.ipynb
+ |       |     |---- 11_histograms_cmds_HR.ipynb
  |       |---- stellar_coordinate_explorer.ipynb
  |------ outputs/
  |       |---- images 
