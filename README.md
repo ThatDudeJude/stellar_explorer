@@ -1,5 +1,5 @@
 # Stellar Coordinate Explorer
-A Python-based astronomy data-analysis project exploring stellar coordinate systems, Gaia DR3 catalog data, and scientific visualization using Astropy.
+A Python-based astronomy data analysis project exploring stellar coordinate systems, Gaia DR3 catalog data, and scientific visualization using Astropy.
 
 ---
 
@@ -14,23 +14,27 @@ This project uses real Gaia DR3 data to:
 
 ---
 
-## Objectives
-- Load and process real Gaia DR3 catalog data using Astropy Tables
+## Main Objective
+Build an interactive astronomy data-analysis and visualization tool for exploring the spatial distribution and photometric properties of nearby Gaia DR3 stellar sources.
+
+## Specific Objectives
+- Load and process real Gaia DR3 catalog data using Astropy
 - Transform stellar coordinates between ICRS and Galactic frames
 - Generate meaningful visualizations of source positions using astronomical sky maps 
 - Explore stellar population using photometric properties and statistical visualizations
 - Build a structured, reproducible astronomy data analysis workflow
+- Build an interactive Streamlit dashboard for stellar exploration
 
 ---
 
 ## Data Source
 
-Data is obtained from the Gaia Archive DR3 sources selected with:
+Data is obtained from the Gaia Archive DR3 sources selected with the following query syntax:
 - Apparent G-band magnitude:
   - `phot_g_mean_mag < 10` (mainly moderately bright and faint sources)
 - Parallax
   - `parallax > 5` (nearby sources, ~ within $200\ pc$)
-- Sample size: $10,000$ stellar sources
+- Sample size: `SELECT TOP 10000` ($10,000$ stellar sources)
 
 This approximately limits the sample to sources within $\approx 200$ parsecs of Earth.
 
@@ -83,6 +87,7 @@ Current visualizations include:
 - Bayesian Blocks adaptive histograms reveal changes in local data density more effectively than fixed-width histograms.
 
 ### Featured Visualizations
+The following figures highlight the spatial distribution and photometric properties of the Gaia DR3 sample.
 - Full-sky Aitoff projections (ICRS and Galactic)
 ![Full-sky Aitoff Projection](./outputs/aitoff_projection_icrs_galactic_coord.png)
 - BP-RP colour index distributions
