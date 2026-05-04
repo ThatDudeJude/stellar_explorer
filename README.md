@@ -22,8 +22,19 @@ Build an interactive astronomy data-analysis and visualization tool for explorin
 - Transform stellar coordinates between ICRS and Galactic frames.
 - Generate meaningful visualizations of source positions using astronomical sky maps. 
 - Explore stellar population using photometric properties and statistical visualizations.
+- Apply basic statistical analysis and hypothesis testing involving astronomical catalogues.
 - Build a structured, reproducible astronomy data analysis workflow.
 - Build an interactive Streamlit dashboard for stellar exploration.
+
+---
+
+## Tools and Technologies
+- Python
+- Astropy
+- Numpy
+- Matplotlib
+- Jupyter Notebook
+- Streamlit (planned)
 
 ---
 
@@ -68,14 +79,6 @@ The selection criteria also introduces important observational biases:
 - Very faint stars are underrepresented due to the magnitude limit
 - Distant Galactic plane structure is less visible because the sample probes mostly nearby stars
 
-## Tools and Technologies
-- Python
-- Astropy
-- Numpy
-- Matplotlib
-- Jupyter Notebook
-- Streamlit (planned)
-
 ---
 
 ## Visualizations and Analysis
@@ -93,6 +96,7 @@ Current visualizations include:
 - Hertzsprung-Russell diagrams
 - Colour-magnitude diagrams using absolute magnitude
 - Selection Bias comparisons
+- Magnitude vs Parallax Analysis
 
 ---
 
@@ -117,7 +121,8 @@ The following figures highlight the spatial distribution and photometric propert
   - Distribution in the Galactic Sky
   ![Selection Bias Effects in Sky Distribution: Uneven distribution in biased sample](./outputs/biased_and_random_gal_coord_comparison.png)
   - Colour-Index distribution
-- ![Selection Bias Effects on Colour-Index Distribution: Similar distribution is observed](./outputs/biased_and_random_colour_index_comparison.png)
+  ![Selection Bias Effects on Colour-Index Distribution: Similar distribution is observed](./outputs/biased_and_random_colour_index_comparison.png)
+-  
 ---
 
 ## Next Steps and Planned Features
@@ -159,6 +164,7 @@ stellar_explorer
  |       |     |---- 10_aitoff_sky_map.ipynb
  |       |     |---- 11_histograms_cmds_HR.ipynb
  |       |     |---- 12_compare_biased_random.ipynb
+ |       |     |---- 13_hypothesis_testing.ipynb
  |       |---- stellar_coordinate_explorer.ipynb
  |------ outputs/
  |       |---- images 
