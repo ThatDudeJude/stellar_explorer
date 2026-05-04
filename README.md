@@ -101,7 +101,7 @@ Current visualizations include:
 - The biased dataset exhibits strong spatial-selection artifacts despite similar photometric properties.
 - The colour index distribution peaks around BP-RP $\approx 0.6-1.0$, consistent with moderately cool dwarf and sun-like stars.
 - The absolute magnitude distribution peaks around $M_{G}\approx 3-5$, broadly matching late F-, G-, and early K-type main-sequence stars.
-- Hertzsprung-Russel diagams reveal a clear stellar main sequence within the nearby Gaia sample.
+- Hertzsprung-Russell diagams reveal a clear stellar main sequence within the nearby Gaia sample.
 
 ### Featured Visualizations
 The following figures highlight the spatial distribution and photometric properties of the Gaia DR3 sample.
