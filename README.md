@@ -101,11 +101,26 @@ Current visualizations include:
 ---
 
 ### Key Findings
-- The sky distribution of randomly selected sources appears approximately isotropic, with no strong concentration along the Galactic plane.
-- The biased dataset exhibits strong spatial-selection artifacts despite similar photometric properties.
-- The colour index distribution peaks around BP-RP $\approx 0.6-1.0$, consistent with moderately cool dwarf and sun-like stars.
-- The absolute magnitude distribution peaks around $M_{G}\approx 3-5$, broadly matching late F-, G-, and early K-type main-sequence stars.
-- Hertzsprung-Russell diagams reveal a clear stellar main sequence within the nearby Gaia sample.
+#### Spatial DIstribution
+- The random Gaia sample produces an approximately isotropic sky distribution.
+- No strong Galactic plane concentration is observed because the sample is limited to nearby stars.
+#### Stellar Population
+- BP-RP colour-index disributions peak around moderate values consistent with FGK-type stars.
+- Absolute magnitude distributions peak near $M\approx 3-5$, which is also consistent with nearby solar-type main-sequence populations and dwarf populations.
+#### Hertzsprung-Russel Diagram
+- The HR diagram reveals a strong main-sequence stellar population.
+- The densest stellar concentration occurs around moderate colour indices and intermediate absolute magnitudes.
+#### Hypothesis Testing
+Tested the hypothesis: "Nearby stars tend to appear brighter."
+Results include:
+- Pearson correlation: $r = 0.198$
+- Spearman correlation: $r_{s} = -0.190$
+- Very small p-values indicating statistical significance
+- Linear regression fit yielded the relation: $Apparent\ Magnitude = -0.024 \times Parallax + 8.888$ while $R^{2} = 0.039$
+
+Intepretation:
+- Nearby stars tend to appear brighter on average.
+- However, distance alone explains only a small fraction of brightness variation because stars possess intrinsically different luminosities.
 
 ### Featured Visualizations
 The following figures highlight the spatial distribution and photometric properties of the Gaia DR3 sample.
@@ -122,11 +137,11 @@ The following figures highlight the spatial distribution and photometric propert
   ![Selection Bias Effects in Sky Distribution: Uneven distribution in biased sample](./outputs/biased_and_random_gal_coord_comparison.png)
   - Colour-Index distribution
   ![Selection Bias Effects on Colour-Index Distribution: Similar distribution is observed](./outputs/biased_and_random_colour_index_comparison.png)
--  
+- Apparent Magnitude vs Distance
+  ![Scatter Plot of Apparent Magnitude vs Parallax](./outputs/apparent_mag_vs_parallax_coloured_by_bp-rp.png)
 ---
 
 ## Next Steps and Planned Features
-- Hypothesis testing (brightness vs distance)
 - Interactive dashboard using Streamlit
 - Coordinate-system toggle (ICRS &rarr; Galactic)
 - Interactive magnitude filtering
