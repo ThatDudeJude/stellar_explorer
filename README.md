@@ -44,10 +44,10 @@ Data is obtained from the Gaia DR3 sources archive. The ADQL query includes the 
 - Apparent G-band magnitude:
   - `phot_g_mean_mag < 10` (mainly moderately bright and faint sources)
 - Parallax
-  - `parallax > 5` (nearby sources, ~ within $200\ pc$)
+  - `parallax > 5` (5 milliarcseconds which selects nearby sources, ~ within $200\ pc$)
 - Sample size: `SELECT TOP 10000` ($10,000$ stellar sources)
 
-For a randomized selection of sources, the following query was used
+For a randomized selection of sources, the following query was used:
 
 ```sql
 SELECT TOP 10000
@@ -77,7 +77,7 @@ primarily contains:
 
 The selection criteria also introduces important observational biases:
 - Very faint stars are underrepresented due to the magnitude limit
-- Distant Galactic plane structure is less visible because the sample probes mostly nearby stars
+- Distant Galactic plane structure is less visible because the sample probes mostly nearby stars which dot the entire celestial sky
 
 ---
 
@@ -88,13 +88,13 @@ Current visualizations include:
 - ICRS sky-position scatter plots
 - Colour-coded stellar maps
 - Hexbin density visualizations
-- Full-sky Aitoff projections
+- Full-sky Aitoff projections (Galactic and Equitorial coordinate frames)
 - Apparent magnitude distributions
 - Absolute magnitude distributions
 - Parallax histograms
 - BP-RP colour index distributions
 - Hertzsprung-Russell diagrams
-- Colour-magnitude diagrams using absolute magnitude
+- Colour-magnitude diagrams using apparent (G-band) magnitude
 - Selection Bias comparisons
 - Magnitude vs Parallax Analysis
 
