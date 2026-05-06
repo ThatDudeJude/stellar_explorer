@@ -38,9 +38,11 @@ Build an interactive astronomy data-analysis and visualization tool for explorin
 
 ---
 
-## Data Source
+## Dataset
 
-Data is obtained from the Gaia DR3 sources archive. The ADQL query includes the following:
+Source: Gaia DR3 Archive
+
+Selection criteria:
 - Apparent G-band magnitude:
   - `phot_g_mean_mag < 10` (mainly moderately bright and faint sources)
 - Parallax
@@ -80,25 +82,26 @@ The selection criteria also introduces important observational biases:
 - Distant Galactic plane structure is less visible because the sample probes mostly nearby stars which dot the entire celestial sky
 
 ---
+## Main Analysis Notebook
 
-## Visualizations and Analysis
+[final_stellar_coordinate_explorer_analysis](./notebooks/final_stellar_coordinate_explorer_analysis.ipynb)
 
-Current visualizations include:
+This notebook integrates the complete analysis workflow and includes the followig:
+
+### Visualizations and Analysis
 
 - ICRS sky-position scatter plots
 - Colour-coded stellar maps
-- Hexbin density visualizations
+- Hexbin density visualization
 - Full-sky Aitoff projections (Galactic and Equitorial coordinate frames)
-- Apparent magnitude distributions
-- Absolute magnitude distributions
+- Apparent magnitude distribution
+- Absolute magnitude distribution
 - Parallax histograms
 - BP-RP colour index distributions
-- Hertzsprung-Russell diagrams
-- Colour-magnitude diagrams using apparent (G-band) magnitude
-- Selection Bias comparisons
+- Hertzsprung-Russell diagram
+- Colour-magnitude diagram using apparent (G-band) magnitude
+- Selection Bias comparison
 - Magnitude vs Parallax Analysis
-
----
 
 ### Key Findings
 #### Spatial DIstribution
@@ -122,23 +125,41 @@ Intepretation:
 - Nearby stars tend to appear brighter on average.
 - However, distance alone explains only a small fraction of brightness variation because stars possess intrinsically different luminosities.
 
-### Featured Visualizations
+### Example Figures
 The following figures highlight the spatial distribution and photometric properties of the Gaia DR3 sample.
 - Full-sky Aitoff projections (ICRS and Galactic)
-![Full-sky Aitoff Projection](./outputs/aitoff_projection_icrs_galactic_coord.png)
+![Full-sky Aitoff projections in both ICRS and Galactic](./outputs/final_outputs/aitoff_projections.png)
 - BP-RP colour index distributions
-![BP-RP colour index distribution](./outputs/bp-rp_distribution.png)
-- Absolute magnitude distributions
-![Absolute magnitude distributions](./outputs/abs_mag_distribution.png)
-- Hertzsprung-Russell diagrams
-![Hertzsprung-Russell diagrams](./outputs/hertzsprung-russel_diagrams.png)
+![BP-RP colour index distribution](./outputs/final_outputs/bp_rp_histogram_bayesian_blocks.png)
+- Magnitude distributions
+![Magnitude distributions](./outputs/final_outputs/magnitudes_histograms_bayesian_blocks.png)
+- Colour-Magnitude and Hertzsprung-Russell Diagrams
+![Colour-Magnitude and Hertzsprung-Russell diagrams](./outputs/final_outputs/cmd_hrd.png)
 - Selection Bias comparisons
-  - Distribution in the Galactic Sky
-  ![Selection Bias Effects in Sky Distribution: Uneven distribution in biased sample](./outputs/biased_and_random_gal_coord_comparison.png)
-  - Colour-Index distribution
-  ![Selection Bias Effects on Colour-Index Distribution: Similar distribution is observed](./outputs/biased_and_random_colour_index_comparison.png)
+![Selection Bias Effects in Sky Distribution: Uneven distribution in biased sample](./outputs/final_outputs/biased_and_random_ra_dec_space_log-stretch.png)  
 - Apparent Magnitude vs Distance
-  ![Scatter Plot of Apparent Magnitude vs Parallax](./outputs/apparent_mag_vs_parallax_coloured_by_bp-rp.png)
+![Scatter Plot of Apparent Magnitude vs Parallax](./outputs/final_outputs/apparent_magnitude_vs_parallax.png)
+
+
+### Supporting Notebooks
+
+|Notebook | Description|
+|----------|----------------|
+|`01_quantities.ipynb`  | Astropy quantiles and unit conversions |
+|`02_coordinates.ipynb` | Coordinate systems and frame transformations |
+|`03_load_and_inspect_biased.ipynb` | Loading and inspecting biased data|
+|`04_coord_tranform_biased.ipynb` | Converting ICRS coordinates to Galactic coordinates with biased data|
+|`05_viz_biased.ipynb` | Initial stellar position visualizations with biased data|
+|`06_load_and_inspect_random.ipynb` | Loading and inspecting random data|
+|`07_coord_transform_random.ipynb` | Converting ICRS coordinates to Galactic coordinates with random data|
+|`08_viz_random.ipynb` | Initial stellar position visualizations using random data |
+|`09_colour_magnitude_random` | Magnitude-coloured sky maps and hexbin analysis on random data |
+|`10_aitoff_sky_map.ipynb` | Full-sky Aitoff projections in Equitorial and Galactic coordinates using random data |
+|`11_histograms_cmds_HR` | Histograms and statistical distributions of random data | 
+|`12_compare_biased_random.ipynb` | Comparing random data stellar position visualizations with biased data|
+|`13_hypothesis_testing.ipynb` | Correlation analysis between magnitude and parallax using random data|
+- 
+
 ---
 
 ## Next Steps and Planned Features
@@ -185,3 +206,27 @@ stellar_explorer
  |       |---- images 
  |------ README.md
  ```
+
+---
+## Why this project matters
+ This project demonstrates practical applications of:
+ - computational astronomy
+ - scientific Python workflow
+ - coordinate transformations
+ - observational data analysis
+ - statistical reasoning
+ - scientific visualization
+
+---
+
+## References
+
+### Data Sources
+- ESA Gaia Archive (Gaia DR3): https://gea.esac.esa.int/archive/
+- Gaia Mission Overview (European Space Agency): https://www.esa.int/Science_Exploration/Space_Science/Gaia
+
+### Python Libraries
+- Astropy Project: https://www.astropy.org/
+- Astropy Documentation: https://docs.astropy.org/
+- Numpy Documentation: https://numpy.org/
+- Matplotlib Documentation: https://matplotlib.org/
