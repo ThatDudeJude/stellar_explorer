@@ -158,7 +158,6 @@ The following figures highlight the spatial distribution and photometric propert
 |`11_histograms_cmds_HR` | Histograms and statistical distributions of random data | 
 |`12_compare_biased_random.ipynb` | Comparing random data stellar position visualizations with biased data|
 |`13_hypothesis_testing.ipynb` | Correlation analysis between magnitude and parallax using random data|
-- 
 
 ---
 
@@ -201,7 +200,7 @@ stellar_explorer
  |       |     |---- 11_histograms_cmds_HR.ipynb
  |       |     |---- 12_compare_biased_random.ipynb
  |       |     |---- 13_hypothesis_testing.ipynb
- |       |---- stellar_coordinate_explorer.ipynb
+ |       |---- final_stellar_coordinate_explorer_analysis.ipynb
  |------ outputs/
  |       |---- images 
  |------ README.md
