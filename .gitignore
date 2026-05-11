@@ -1,1 +1,4 @@
 notebooks/learning/notes_*
+app/learning_*
+app/example_*
+*.html
