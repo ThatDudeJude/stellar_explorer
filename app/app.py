@@ -1,12 +1,11 @@
 import streamlit as st
 from astropy.coordinates import SkyCoord
-from astropy.visualization import quantity_support
 from astropy.table import Table
 import plotly.express as px
 import numpy as np
 from utils import load_fits, add_galactic_coords, add_abs_mag, add_distance_pc
 
-quantity_support()
+# Title
 st.title("Stellar Coordinate Explorer")
 
 # Sidebar
@@ -14,12 +13,21 @@ st.title("Stellar Coordinate Explorer")
 sidebar = st.sidebar
 
 with sidebar:
-    with st.expander("Data Source"):
-        # st.subheader("Data Source")
+    # Selecting source of data (file or astroquery)
+    
+    with st.expander("Data Source"):        
+        
+        # Radio buttons
         data_source = st.radio("Select data source", ['File Upload', 'Live Gaia DR3 ADQL'])
+        
+        # Boolean for checking is source is loaded to avoid computations on empty data in tabs        
         source_is_loaded = False
+        
+        
+        # Checking source type
         if data_source == 'File Upload':
-            st.write("File Uploading")
+            # File upload
+            
             file = st.file_uploader("Upload a CSV/FITS file", accept_multiple_files=False, )    
             if file:
                 sources_df = load_fits(file)
@@ -28,10 +36,31 @@ with sidebar:
             st.write("Fetch with Astroquery")
         else:
             st.write("Something Went Wrong!")
-            
+    
+    # Selecting coordinate frame
+    
     with st.expander("Coordinate Frame"):
         coord_frame = st.radio("Select Coordinate System", ['ICRS (RA/Dec)', 'Galactic (l/b)'])        
     
+    # Filtering sources 
+    with st.expander("Filtering"):
+        
+        # Confirm source is loaded
+        if source_is_loaded:
+            
+            # Obtain min and max apparent magnitudes
+            min_app_mag = float(sources_df['phot_g_mean_mag'].min())
+            max_app_mag = float(sources_df['phot_g_mean_mag'].max())
+            
+            # Select minimum and maximum aparent magnitude
+            app_mag_range = st.slider("Select Apparent Magnitude Range", 
+                    min_value=min_app_mag,
+                    max_value=max_app_mag,
+                    value=(min_app_mag, max_app_mag)
+                    )
+            
+            # filter sources within apparent magnitude range values selected
+            sources_df = sources_df[(sources_df['phot_g_mean_mag'] >= app_mag_range[0]) & (sources_df['phot_g_mean_mag'] <= app_mag_range[1])]
     
     # st.write("Filters")
     
@@ -107,7 +136,7 @@ with sky_map_tab:
                 labels={'gal b': 'Galactic Longitude (&deg;)', 'gal l': 'Galactic Latitude (&deg;)'},
                 title=f'Galactic Coordinates Sky Map (N={len(sky_map_sources_df)} sources)'
             ) 
-        # fig.update_layout(coloraxis_colorbar=dict(range_color=[min_val, max_val]))    
+        
         st.plotly_chart(fig, width='stretch')
             
     
