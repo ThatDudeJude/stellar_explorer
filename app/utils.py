@@ -1,6 +1,8 @@
 # Reusable functions for the Stellar Coordinate Explorer dashboard
 
 from astropy.table import Table
+from astropy.coordinates import SkyCoord
+import astropy.units as u
 
 
 def load_fits(file_path_or_buffer_data):
