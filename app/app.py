@@ -183,7 +183,7 @@ with cmd_tab:
         
         # Add radio buttons for selecting between scatter and histogram 2d contour plot        
         with col1:
-            plot_selected = st.radio('Plot Type', ['Scatter', '2D Histogram Contour'])
+            plot_selected = st.radio('Plot Type', ['Scatter', '2D Histogram Contour'], key=0)
             
             
         
@@ -193,7 +193,7 @@ with cmd_tab:
             if plot_selected == 'Scatter':
                 # Add radio buttons for selecting colour mapping based on parallax, distance, absolute magnitude or none
                 
-                colour_map_var = st.radio("Variable for Colour Points", ['None', 'Parallax (mas)', 'Distance (pc)', 'G (mag)'])
+                colour_map_var = st.radio("Variable for Colour Points", ['None', 'Parallax (mas)', 'Distance (pc)', 'G (mag)'], key=1)
                                 
                 # Update related arguments based on selection        
                 if colour_map_var == 'None':
@@ -214,8 +214,9 @@ with cmd_tab:
             elif plot_selected == '2D Histogram Contour':
                 # Add radio buttons for selecting binning function
                 
-                bin_func = st.radio("Choose Binning Function", ['Count (stellar density)', 'Average (average distance per bin)'])
+                bin_func = st.radio("Choose Binning Function", ['Count (stellar density)', 'Average (average distance per bin)'], key=2)
                 
+                # Update histogram function, z column, colour bar title and statistics on hover
                 if bin_func == 'Count (stellar density)':
                     hist_func = 'count' 
                     z_col = None
@@ -240,7 +241,7 @@ with cmd_tab:
                 range_color=range_colour,
                 hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f'},
                 labels={'BP-RP': 'BP - RP (mag)', 'G mag': 'G (mag)'},
-                title=f'Colour Magnitude Diagram (N={len(sky_map_sources_df)} sources)'
+                title=f'Colour Magnitude Diagram (N={len(cmd_sources_df)} sources)'
             )
                         
             
@@ -284,10 +285,108 @@ with cmd_tab:
 with hr_tab:
     st.header("Hertzsprung-Russel Diagram")
     
-    # Copy sources data for tab
-    # hrd_sources_df
-    
-    
+    # Update loaded data and check for coordinate type
+    if data_source == 'File Upload' and source_is_loaded:
+        
+        # Copy sources data for tab
+        hrd_sources_df = sources_df.copy()
+        
+        col1, col2 = st.columns(2)
+        
+        # Add radio buttons for selecting between scatter and 2D histogram contour plot
+        with col1:
+            plot_selected = st.radio('Plot Type', ['Scatter', '2D Histogram Contour'], key=3)
+            
+
+        # Select radio buttons displayed in col2 based on pot type
+        with col2:
+            # Scatter plot
+            if plot_selected == 'Scatter':
+                # Add radio buttons for selecting colour mapping based on parallax, distance, absolute magnitude or none
+                
+                colour_map_var = st.radio("Variable for Colour Points", ['None', 'Parallax (mas)', 'Distance (pc)', 'G (mag)'], key=4)
+                
+                # Update related arguments based on selection
+                if colour_map_var == 'None':
+                    range_colour = [0, 0]
+                    var_selected = None
+                elif colour_map_var == 'Parallax (mas)':
+                    range_colour = [hrd_sources_df['parallax'].min(), hrd_sources_df['parallax'].max()]
+                    var_selected = 'parallax'
+                elif colour_map_var == 'Distance (pc)':
+                    range_colour = [hrd_sources_df['distance (pc)'].min(), hrd_sources_df['distance (pc)'].max()]
+                    var_selected = 'distance (pc)'
+                elif colour_map_var == 'G (mag)':
+                    range_colour = [hrd_sources_df['G mag'].min(), hrd_sources_df['G mag'].min()]
+                    var_selected = 'G mag'
+
+            #  2D Histogram Contour
+            elif plot_selected == '2D Histogram Contour':
+                # Add radio buttons for selecting binning function
+                
+                bin_func = st.radio("Choose Binning Function", ['Count (stellar density)', 'Average (average distance per bin)'], key=5)
+
+                # Update histogram function, z column, colour bar title and statistics on hover
+                if bin_func == 'Count (stellar density)':
+                    hist_func = 'count'
+                    z_col = None
+                    cb_title = 'Stars per bin'
+                    hover_temp_stat = 'Count'
+                elif bin_func == 'Average (average distance per bin)':
+                    hist_func = 'avg'
+                    z_col = hrd_sources_df['parallax']
+                    cb_title = 'Average distance per bin'
+                    hover_temp_stat = 'Avg Distance:'
+                    
+        # Plot CMD
+        
+        if plot_selected == 'Scatter':
+            # Scatter plot
+            
+            fig = px.scatter(
+                hrd_sources_df, 
+                x='BP-RP', 
+                y='M (G-band)',
+                color=var_selected,
+                range_color=range_colour,
+                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f'},
+                labels={'BP-RP': 'BP - RP (mag)', 'M (G-band)': 'Absolute G-band Magnitude (mag)'},
+                title=f'Hertzsprung-Russell Diagram (N={len(hrd_sources_df)} sources)'      
+            )
+        
+        elif plot_selected == '2D Histogram Contour':
+            # 2D Histogram Contour
+            
+            # Pick a binning number for both x and y
+            xbins = st.slider("Number of bins for x axis", 2, 100)
+            ybins = st.slider("Number of bins for y axis", 2, 100)
+            
+            fig = go.Figure(
+                go.Histogram2dCounter(
+                    x=hrd_sources_df['BP-RP'],
+                    y=hrd_sources_df['G mag'],
+                    z=z_col,
+                    histfunc=hist_func,
+                    nbinsx=xbins,
+                    nbinsy=ybins,
+                    contours=dict(
+                        coloring='heatmap',
+                        showlabels=False
+                    ),
+                    colorbar=dict(
+                        title=cb_title, 
+                        tickformat='.0f'
+                    ),
+                    hovertemplate='Colour: %{x:.2f}<br>Magnitude: %{y:.2f}<br>' + hover_temp_stat + ' %{z:.0f}<extra></extra>',
+                ),
+            )
+        
+        fig.update_yaxes(autorange="reversed")
+        st.plotly_chart(fig, width="stretch")
+        
+    else:
+        st.write("To view the Hertzsprung-Russell Diagram, select data file or fetch data to load from Data Source.")
+        
 with distance_tab:
     st.header("Distance (Parallax)")
     
