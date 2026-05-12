@@ -20,7 +20,7 @@ with sidebar:
         # Radio buttons
         data_source = st.radio("Select data source", ['File Upload', 'Live Gaia DR3 ADQL'])
         
-        # Boolean for checking is source is loaded to avoid computations on empty data in tabs        
+        # Boolean for checking is source is loaded to avoid attempting computations on empty data in tabs        
         source_is_loaded = False
         
         
@@ -37,17 +37,20 @@ with sidebar:
         else:
             st.write("Something Went Wrong!")
     
-    # Selecting coordinate frame
+    # Selecting coordinate frame for sky map
     
     with st.expander("Coordinate Frame"):
         coord_frame = st.radio("Select Coordinate System", ['ICRS (RA/Dec)', 'Galactic (l/b)'])        
     
+    
     # Filtering sources 
     with st.expander("Filtering"):
         
-        # Confirm source is loaded
+        
+        # Confirm data from source is loaded
         if source_is_loaded:
             
+            # Apparent Magnitude Filter    
             # Obtain min and max apparent magnitudes
             min_app_mag = float(sources_df['phot_g_mean_mag'].min())
             max_app_mag = float(sources_df['phot_g_mean_mag'].max())
@@ -61,8 +64,30 @@ with sidebar:
             
             # filter sources within apparent magnitude range values selected
             sources_df = sources_df[(sources_df['phot_g_mean_mag'] >= app_mag_range[0]) & (sources_df['phot_g_mean_mag'] <= app_mag_range[1])]
-    
-    # st.write("Filters")
+            
+            
+            # Distance Filter
+            # Obtain min and max parallax
+            min_parallax = float(sources_df['parallax'].min())
+            max_parallax = float(sources_df['parallax'].max())
+            # Convert to distance in parsec
+            max_distance = 1000.0 / min_parallax 
+            min_distance = 1000.0/ max_parallax
+            
+            # Select minimum and maximum distance
+            distance_range = st.slider("Select Distance Range (in pc)", 
+                                       min_value=min_distance,
+                                       max_value=max_distance,
+                                       value=(min_distance, max_distance))
+            
+            # filter sources within distance range values selected
+            sources_df = sources_df[(sources_df['parallax'] >= (1000.0 / distance_range[1])) & (sources_df['parallax'] <= (1000.0 / distance_range[0]))]
+            
+        else:
+            st.write('Load data from Data Source to apply Filtering')
+
+        
+        
     
     # st.write("Coordinate Frame")
     # st.write("Download")
@@ -72,7 +97,7 @@ with sidebar:
 
 
 
-# Tabs
+# Tabs for sky map, cmd, hr diagram, 3d xyz plot
 
 sky_map_tab, cmd_tab, hr_tab, distance_tab, three_d_xyz_tab = st.tabs(["Sky Map", "CMD", "HR Diagram", "Distance", "3D XYZ"])
     
@@ -85,7 +110,7 @@ with sky_map_tab:
     # Update loaded data and check for coordinate type
     if data_source == 'File Upload' and source_is_loaded:
         
-        # Add Galactic Coords, Absolute Magnitude and Distance columns
+        # Add Galactic Coords, Absolute Magnitude and Distance columns to dataframe
         
         sky_map_sources_df = add_galactic_coords(sources_df)
         sky_map_sources_df = add_abs_mag(sky_map_sources_df)
@@ -139,7 +164,8 @@ with sky_map_tab:
         
         st.plotly_chart(fig, width='stretch')
             
-    
+    else:
+        st.write("To view the sky plot, select data file or fetch data to load from Data Source.")
 
 with cmd_tab:
     st.header("Colour-Magnitude Diagram")    
