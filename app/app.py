@@ -84,6 +84,19 @@ with sidebar:
             # filter sources within distance range values selected
             sources_df = sources_df[(sources_df['parallax'] >= (1000.0 / distance_range[1])) & (sources_df['parallax'] <= (1000.0 / distance_range[0]))]
             
+            # Add Galactic Coords, Absolute Magnitude and Distance columns to dataframe
+            
+            sources_df = add_galactic_coords(sources_df)
+            sources_df = add_abs_mag(sources_df)
+            sources_df = add_distance_pc(sources_df)
+            
+            # Create new abs_mag_log_column for log-stretch normalization
+            sources_df['abs_mag_log'] = np.log10(sources_df['abs_mag'])
+            
+            # Rename columns for hover data
+            sources_df = sources_df.rename(columns={'source_id': 'source id', 'phot_g_mean_mag': 'G mag', 'abs_mag_log': 'log(G mag)', 'bp_rp': 'BP-RP', 
+                                                                'distance_pc': 'distance (pc)', 'abs_mag': 'M (G-band)', 'gal_l': 'gal l', 'gal_b': 'gal b'})
+            
         else:
             st.write('Load data from Data Source to apply Filtering')
 
@@ -111,20 +124,8 @@ with sky_map_tab:
     # Update loaded data and check for coordinate type
     if data_source == 'File Upload' and source_is_loaded:
         
-        # Add Galactic Coords, Absolute Magnitude and Distance columns to dataframe
-        
-        sky_map_sources_df = add_galactic_coords(sources_df)
-        sky_map_sources_df = add_abs_mag(sky_map_sources_df)
-        sky_map_sources_df = add_distance_pc(sky_map_sources_df)
-        
-        # Create new abs_mag_log column for log-stetch normalization
-        sky_map_sources_df['abs_mag_log'] = np.log10(sky_map_sources_df['abs_mag'])
-        
-        # Rename columns for hover data 
-        
-        sky_map_sources_df = sky_map_sources_df.rename(columns={'source_id': 'source id', 'phot_g_mean_mag': 'G mag', 'abs_mag_log': 'log(G mag)', 'bp_rp': 'BP-RP', 
-                                                                'distance_pc': 'distance (pc)', 'abs_mag': 'M (G-band)', 'gal_l': 'gal l', 'gal_b': 'gal b'})
-                
+        # Copy sources data for tab
+        sky_map_sources_df = sources_df.copy()        
         
         
         # Add radio buttons for selecting colour scaling for normalization 
@@ -174,20 +175,9 @@ with cmd_tab:
         
     # Update loaded data and check for coordinate type
     if data_source == 'File Upload' and source_is_loaded:
-        
-        # Add Galactic Coords, Absolute Magnitude and Distance columns to dataframe
-        
-        cmd_sources_df = add_galactic_coords(sources_df)
-        cmd_sources_df = add_abs_mag(cmd_sources_df)
-        cmd_sources_df = add_distance_pc(cmd_sources_df)
-        
-        # Create new abs_mag_log column for log-stetch normalization
-        cmd_sources_df['abs_mag_log'] = np.log10(cmd_sources_df['abs_mag'])
-        
-        # Rename columns for hover data 
-        
-        cmd_sources_df = cmd_sources_df.rename(columns={'source_id': 'source id', 'phot_g_mean_mag': 'G mag', 'abs_mag_log': 'log(G mag)', 'bp_rp': 'BP-RP', 
-                                                                'distance_pc': 'distance (pc)', 'abs_mag': 'M (G-band)', 'gal_l': 'gal l', 'gal_b': 'gal b'})
+                
+        # Copy sources data for tab
+        cmd_sources_df = sources_df.copy()                                                                
         
         col1, col2 = st.columns(2)
         
@@ -287,9 +277,16 @@ with cmd_tab:
             
     else:
         st.write("To view the Colour Magnitude Diagram, select data file or fetch data to load from Data Source.")
+
+
+# HR Diagram Tab
     
 with hr_tab:
     st.header("Hertzsprung-Russel Diagram")
+    
+    # Copy sources data for tab
+    # hrd_sources_df
+    
     
 with distance_tab:
     st.header("Distance (Parallax)")
