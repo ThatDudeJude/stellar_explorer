@@ -33,6 +33,7 @@ with sidebar:
             file = st.file_uploader("Upload FITS/CSV file", accept_multiple_files=False, )    
             if file:
                 sources_df = load_fits(file)
+                sources_df.fillna(np.nan)
                 source_is_loaded = True
         elif data_source == 'Live Gaia DR3 ADQL':
             st.write("Fetch with Astroquery")
@@ -196,6 +197,9 @@ with data_tab:
         
         
         st.markdown('---')
+    
+    else:
+        st.write("To view data and statistics, select data file or fetch data to load from Data Source.")
 
 # Sky Map Tab
 with sky_map_tab:        
@@ -203,7 +207,7 @@ with sky_map_tab:
     # Header
     st.header("Sky Map")
     
-    # Update loaded data and check for coordinate type
+    # Confirm data is loaded
     if data_source == 'File Upload' and source_is_loaded:
         
         # Copy sources data for tab
@@ -268,7 +272,7 @@ with sky_map_tab:
 with cmd_tab:
     st.header("Colour-Magnitude Diagram")    
         
-    # Update loaded data and check for coordinate type
+    # Confirm data is loaded
     if data_source == 'File Upload' and source_is_loaded:
                 
         # Copy sources data for tab
@@ -380,7 +384,7 @@ with cmd_tab:
 with hr_tab:
     st.header("Hertzsprung-Russel Diagram")
     
-    # Update loaded data and check for coordinate type
+    # Confirm data is loaded
     if data_source == 'File Upload' and source_is_loaded:
         
         # Copy sources data for tab
@@ -489,6 +493,66 @@ with hr_tab:
         
 with distance_tab:
     st.header("Distance (Parallax)")
+    
+    # Confirm data is loaded
+    if data_source == 'File Upload' and source_is_loaded:
+        
+        # Copy sources data for tab
+        distance_sources_df = sources_df.copy()
+        
+        hist_selection_col, norm_selection_col = st.columns(2)
+        
+        # Select distance or parallax histogram
+        with hist_selection_col:
+            hist_displayed = st.radio("Histogram plotted", ['Distance',  'Parallax'])
+        
+        # Select normalization
+        with norm_selection_col:
+            norm_selected = st.radio("Normalization", ['None', 'Percent'])
+            norm = ['' if norm_selected == 'None' else norm_selected.lower()][0]
+            if norm == 'percent':
+                yaxis_title = 'Percentage of sources (%)'            
+            else:
+                yaxis_title='Number of sources'
+        # Selecting number of bins
+        num_bins = st.slider("Number of bins", 15, 50)
+        
+        # Histogram
+        if hist_displayed == 'Distance':            
+            # Distance histogram
+            
+            fig = px.histogram(
+                distance_sources_df,
+                x='distance (pc)',
+                nbins=num_bins,
+                histnorm=norm,
+                marginal='box',            
+                opacity=0.7,
+                barmode='overlay',                
+                
+            )
+        
+            fig.update_layout(bargap=0.02, xaxis_title='Distance (pc)', yaxis_title=yaxis_title,
+                            title=f"Distance distribution of the sample (N={len(distance_sources_df)})")
+            st.plotly_chart(fig, width="stretch")
+        
+        elif hist_displayed == 'Parallax':
+            # Parallax histogram
+            
+            fig = px.histogram(
+                distance_sources_df,
+                x='parallax',
+                nbins=num_bins,
+                histnorm=norm,
+                marginal='box',            
+                opacity=0.7,
+                barmode='overlay',
+                
+            )
+        
+            fig.update_layout(bargap=0.02, xaxis_title='Parallax (mas)', yaxis_title=yaxis_title,
+                            title=f"Parallax distribution of the sample (N={len(distance_sources_df)})")
+            st.plotly_chart(fig, width="stretch")
     
 with three_d_xyz_tab:
     st.header("3D XYZ Plot")
