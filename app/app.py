@@ -97,7 +97,7 @@ with sidebar:
             sources_df['abs_mag_log'] = np.log10(sources_df['abs_mag'])
             
             # Rename columns for hover data
-            sources_df = sources_df.rename(columns={'source_id': 'source id', 'phot_g_mean_mag': 'G mag', 'abs_mag_log': 'log(G mag)', 'bp_rp': 'BP-RP', 
+            sources_df = sources_df.rename(columns={'source_id': 'source id', 'phot_g_mean_mag': 'G mag', 'abs_mag_log': 'log(G mag)', 'bp_rp': 'BP-RP', 'parallax': 'parallax (mas)',
                                                     'distance_pc': 'distance (pc)', 'abs_mag': 'M (G-band)', 'gal_l': 'gal l', 'gal_b': 'gal b',
                                                     'X': 'X (pc)', 'Y': 'Y (pc)', 'Z': 'Z (pc)'})
             
@@ -148,10 +148,10 @@ with data_tab:
         min_parallax_col, max_parallax_col = st.columns(2)
         
         with min_parallax_col:
-            st.metric('Minimum', round(sources_df['parallax'].min(), 4))
+            st.metric('Minimum', round(sources_df['parallax (mas)'].min(), 4))
         
         with max_parallax_col:
-            st.metric('Maximum', round(sources_df['parallax'].max(), 4))
+            st.metric('Maximum', round(sources_df['parallax (mas)'].max(), 4))
         
         st.markdown('---')
         
@@ -233,7 +233,7 @@ with sky_map_tab:
                 y=sky_map_sources_df['dec'],
                 color=scale_selected,
                 range_color=[min_val, max_val],                
-                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f', 'X (pc)': False, 'Y (pc)': False, 'Z (pc)': False},
+                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax (mas)': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f', 'X (pc)': False, 'Y (pc)': False, 'Z (pc)': False},
                 labels={'ra': 'Right Ascension (&deg;)', 'dec': 'Declination (&deg;)'},
                 title=f'ICRS Sky Map (N={len(sky_map_sources_df)} sources)'            
             )
@@ -254,7 +254,7 @@ with sky_map_tab:
                 y=sky_map_sources_df['gal b'],
                 color=scale_selected,
                 range_color=[min_val, max_val],
-                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f'},
+                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax (mas)': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f'},
                 labels={'gal b': 'Galactic Longitude (&deg;)', 'gal l': 'Galactic Latitude (&deg;)'},
                 title=f'Galactic Coordinates Sky Map (N={len(sky_map_sources_df)} sources)'
             ) 
@@ -301,8 +301,8 @@ with cmd_tab:
                     range_colour = [0, 0]
                     var_selected = None
                 elif colour_map_var == 'Parallax (mas)':
-                    range_colour = [cmd_sources_df['parallax'].min(), cmd_sources_df['parallax'].max()]
-                    var_selected = 'parallax'
+                    range_colour = [cmd_sources_df['parallax (mas)'].min(), cmd_sources_df['parallax (mas)'].max()]
+                    var_selected = 'parallax (mas)'
                 elif colour_map_var == 'Distance (pc)':
                     range_colour = [cmd_sources_df['distance (pc)'].min(), cmd_sources_df['distance (pc)'].max()]
                     var_selected = 'distance (pc)'
@@ -325,7 +325,7 @@ with cmd_tab:
                     hover_temp_stat = 'Count'
                 elif bin_func == 'Average (average distance per bin)':
                     hist_func = 'avg'
-                    z_col = cmd_sources_df['parallax']
+                    z_col = cmd_sources_df['parallax (mas)']
                     cb_title = 'Average distance per bin'
                     hover_temp_stat = 'Avg Distance:'
         
@@ -340,7 +340,7 @@ with cmd_tab:
                 y='G mag',
                 color=var_selected,
                 range_color=range_colour,
-                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f', 'X (pc)': False, 'Y (pc)': False, 'Z (pc)': False},
+                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax (mas)': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f', 'X (pc)': False, 'Y (pc)': False, 'Z (pc)': False},
                 labels={'BP-RP': 'BP - RP (mag)', 'G mag': 'G (mag)'},
                 title=f'Colour Magnitude Diagram (N={len(cmd_sources_df)} sources)'
             )
@@ -412,8 +412,8 @@ with hr_tab:
                     range_colour = [0, 0]
                     var_selected = None
                 elif colour_map_var == 'Parallax (mas)':
-                    range_colour = [hrd_sources_df['parallax'].min(), hrd_sources_df['parallax'].max()]
-                    var_selected = 'parallax'
+                    range_colour = [hrd_sources_df['parallax (mas)'].min(), hrd_sources_df['parallax (mas)'].max()]
+                    var_selected = 'parallax (mas)'
                 elif colour_map_var == 'Distance (pc)':
                     range_colour = [hrd_sources_df['distance (pc)'].min(), hrd_sources_df['distance (pc)'].max()]
                     var_selected = 'distance (pc)'
@@ -435,7 +435,7 @@ with hr_tab:
                     hover_temp_stat = 'Count'
                 elif bin_func == 'Average (average distance per bin)':
                     hist_func = 'avg'
-                    z_col = hrd_sources_df['parallax']
+                    z_col = hrd_sources_df['parallax (mas)']
                     cb_title = 'Average distance per bin'
                     hover_temp_stat = 'Avg Distance:'
                     
@@ -450,7 +450,7 @@ with hr_tab:
                 y='M (G-band)',
                 color=var_selected,
                 range_color=range_colour,
-                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f', 'X (pc)': False, 'Y (pc)': False, 'Z (pc)': False},
+                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax (mas)': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f', 'X (pc)': False, 'Y (pc)': False, 'Z (pc)': False},
                 labels={'BP-RP': 'BP - RP (mag)', 'M (G-band)': 'Absolute G-band Magnitude (mag)'},
                 title=f'Hertzsprung-Russell Diagram (N={len(hrd_sources_df)} sources)'      
             )
@@ -543,7 +543,7 @@ with distance_tab:
             
             fig = px.histogram(
                 distance_sources_df,
-                x='parallax',
+                x='parallax (mas)',
                 nbins=num_bins,
                 histnorm=norm,
                 marginal='box',            
@@ -571,15 +571,15 @@ with three_d_xyz_tab:
         
         # Add radio buttons for selecting colour mapping based on parallax, distance, absolute magnitude or none
                 
-        colour_map_var = st.radio("Variable for Colour Points", ['None', 'Parallax (mas)', 'Distance (pc)', 'G (mag)', 'M (G-band)'], key=5)
+        colour_map_var = st.radio("Variable for Colour Points", ['None', 'Parallax (mas)', 'Distance (pc)', 'G (mag)', 'M (G-band)'], key=6)
         
         # Update related arguments based on selection
         if colour_map_var == 'None':
             range_colour = [0, 0]
             var_selected = None
         elif colour_map_var == 'Parallax (mas)':
-            range_colour = [xyz_sources_df['parallax'].min(), xyz_sources_df['parallax'].max()]
-            var_selected = 'parallax'
+            range_colour = [xyz_sources_df['parallax (mas)'].min(), xyz_sources_df['parallax (mas)'].max()]
+            var_selected = 'parallax (mas)'
         elif colour_map_var == 'Distance (pc)':
             range_colour = [xyz_sources_df['distance (pc)'].min(), xyz_sources_df['distance (pc)'].max()]
             var_selected = 'distance (pc)'
@@ -598,7 +598,7 @@ with three_d_xyz_tab:
             color=var_selected,  
             range_color=range_colour,          
             opacity=0.7,
-            hover_data={'source id': True, 'X (pc)': True, 'Y (pc)': True, 'Z (pc)': True,  'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f'},
+            hover_data={'source id': True, 'X (pc)': True, 'Y (pc)': True, 'Z (pc)': True,  'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax (mas)': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f'},
         )        
         fig.update_traces(marker_size=4)
         fig.update_layout(scene=dict(xaxis_title='Galactic X (pc)', yaxis_title='Galactic Y (pc)', 
