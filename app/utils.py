@@ -99,3 +99,35 @@ def add_distance_pc(df, parallax_col='parallax'):
     """
     df['distance_pc'] = 1000.0 / df[parallax_col]
     return df
+
+
+def add_xyz_galactic(df, l_col='gal_l', b_col='gal_b', distance_col='distance_pc'):
+    """
+    Convert Galactic coordinates (l, b, distance) to Cartesian X, Y, Z.
+    
+    Parameters
+    ----------
+    df: pandas.DataFrame
+        Must contain l_col (deg), b_col (deg), distance_col (pc).
+        
+    l_col: str
+        Galactic longitude column name.
+    b_col: str
+        Galactic latitude column name.
+    distance_col: str
+        Distance in parsecs.
+
+    Returns
+    -------
+    pandas.DataFrame    
+        DataFrame with new columns 'X', 'Y', 'Z' (pc).
+    """
+    l_rad = np.radians(df[l_col])
+    b_rad = np.radians(df[b_col])
+    d = df[distance_col]
+    
+    df['X'] = d * np.cos(b_rad) * np.cos(l_rad)
+    df['Y'] = d * np.cos(b_rad) * np.sin(l_rad)
+    df['Z'] = d * np.sin(b_rad)
+    return df
+

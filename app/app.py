@@ -5,7 +5,7 @@ from astropy.table import Table
 import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
-from utils import load_fits, add_galactic_coords, add_abs_mag, add_distance_pc
+from utils import load_fits, add_galactic_coords, add_abs_mag, add_distance_pc, add_xyz_galactic
 
 # Title
 st.title("Stellar Coordinate Explorer")
@@ -86,18 +86,20 @@ with sidebar:
             # filter sources within distance range values selected
             sources_df = sources_df[(sources_df['parallax'] >= (1000.0 / distance_range[1])) & (sources_df['parallax'] <= (1000.0 / distance_range[0]))]
             
-            # Add Galactic Coords, Absolute Magnitude and Distance columns to dataframe
+            # Add Galactic Coords, Absolute Magnitude, Distance and Cartesian Coordinates columns to dataframe
             
             sources_df = add_galactic_coords(sources_df)
             sources_df = add_abs_mag(sources_df)
             sources_df = add_distance_pc(sources_df)
+            sources_df = add_xyz_galactic(sources_df)
             
             # Create new abs_mag_log_column for log-stretch normalization
             sources_df['abs_mag_log'] = np.log10(sources_df['abs_mag'])
             
             # Rename columns for hover data
             sources_df = sources_df.rename(columns={'source_id': 'source id', 'phot_g_mean_mag': 'G mag', 'abs_mag_log': 'log(G mag)', 'bp_rp': 'BP-RP', 
-                                                                'distance_pc': 'distance (pc)', 'abs_mag': 'M (G-band)', 'gal_l': 'gal l', 'gal_b': 'gal b'})
+                                                    'distance_pc': 'distance (pc)', 'abs_mag': 'M (G-band)', 'gal_l': 'gal l', 'gal_b': 'gal b',
+                                                    'X': 'X (pc)', 'Y': 'Y (pc)', 'Z': 'Z (pc)'})
             
         else:
             st.write('Load data from Data Source to apply Filtering')
@@ -231,12 +233,12 @@ with sky_map_tab:
                 y=sky_map_sources_df['dec'],
                 color=scale_selected,
                 range_color=[min_val, max_val],                
-                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f'},
+                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f', 'X (pc)': False, 'Y (pc)': False, 'Z (pc)': False},
                 labels={'ra': 'Right Ascension (&deg;)', 'dec': 'Declination (&deg;)'},
                 title=f'ICRS Sky Map (N={len(sky_map_sources_df)} sources)'            
             )
             
-            st.plotly_chart(fig, width='stretch')
+            st.plotly_chart(fig, width=800, height=700)
             
             # Add coordinates range
             
@@ -258,7 +260,7 @@ with sky_map_tab:
             ) 
             
             
-            st.plotly_chart(fig, width='stretch')
+            st.plotly_chart(fig, width=800, height=700)
             
             # Add coordinaetes range
             st.markdown(f"__l range__: {sky_map_sources_df['gal l'].min()} &deg;   to   {sky_map_sources_df['gal l'].max()} &deg;")
@@ -338,7 +340,7 @@ with cmd_tab:
                 y='G mag',
                 color=var_selected,
                 range_color=range_colour,
-                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f'},
+                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f', 'X (pc)': False, 'Y (pc)': False, 'Z (pc)': False},
                 labels={'BP-RP': 'BP - RP (mag)', 'G mag': 'G (mag)'},
                 title=f'Colour Magnitude Diagram (N={len(cmd_sources_df)} sources)'
             )
@@ -373,7 +375,7 @@ with cmd_tab:
         fig.update_yaxes(autorange="reversed")
         
         
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, width=800, height=700)
             
     else:
         st.write("To view the Colour Magnitude Diagram, select data file or fetch data to load from Data Source.")
@@ -448,7 +450,7 @@ with hr_tab:
                 y='M (G-band)',
                 color=var_selected,
                 range_color=range_colour,
-                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f'},
+                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f', 'X (pc)': False, 'Y (pc)': False, 'Z (pc)': False},
                 labels={'BP-RP': 'BP - RP (mag)', 'M (G-band)': 'Absolute G-band Magnitude (mag)'},
                 title=f'Hertzsprung-Russell Diagram (N={len(hrd_sources_df)} sources)'      
             )
@@ -486,7 +488,7 @@ with hr_tab:
                               xaxis_title='BP - RP (mag)', yaxis_title='Absolute G-band Magnitude (mag)')
             
         fig.update_yaxes(autorange="reversed")
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, width=800, height=700)
         
     else:
         st.write("To view the Hertzsprung-Russell Diagram, select data file or fetch data to load from Data Source.")
@@ -534,7 +536,7 @@ with distance_tab:
         
             fig.update_layout(bargap=0.02, xaxis_title='Distance (pc)', yaxis_title=yaxis_title,
                             title=f"Distance distribution of the sample (N={len(distance_sources_df)})")
-            st.plotly_chart(fig, width="stretch")
+            st.plotly_chart(fig, width=800, height=700)
         
         elif hist_displayed == 'Parallax':
             # Parallax histogram
@@ -552,7 +554,57 @@ with distance_tab:
         
             fig.update_layout(bargap=0.02, xaxis_title='Parallax (mas)', yaxis_title=yaxis_title,
                             title=f"Parallax distribution of the sample (N={len(distance_sources_df)})")
-            st.plotly_chart(fig, width="stretch")
-    
+            st.plotly_chart(fig, width=800, height=700)
+    else:
+        st.write("To view the distance histogram, select data file or fetch data to load from Data Source.")
+        
+        
+# 3D XYZ Tab
 with three_d_xyz_tab:
     st.header("3D XYZ Plot")
+    
+    # Confirm data is loaded
+    if data_source == 'File Upload' and source_is_loaded:
+        
+        # Copy sources data for tab
+        xyz_sources_df = sources_df.copy()
+        
+        # Add radio buttons for selecting colour mapping based on parallax, distance, absolute magnitude or none
+                
+        colour_map_var = st.radio("Variable for Colour Points", ['None', 'Parallax (mas)', 'Distance (pc)', 'G (mag)', 'M (G-band)'], key=5)
+        
+        # Update related arguments based on selection
+        if colour_map_var == 'None':
+            range_colour = [0, 0]
+            var_selected = None
+        elif colour_map_var == 'Parallax (mas)':
+            range_colour = [xyz_sources_df['parallax'].min(), xyz_sources_df['parallax'].max()]
+            var_selected = 'parallax'
+        elif colour_map_var == 'Distance (pc)':
+            range_colour = [xyz_sources_df['distance (pc)'].min(), xyz_sources_df['distance (pc)'].max()]
+            var_selected = 'distance (pc)'
+        elif colour_map_var == 'G (mag)':
+            range_colour = [xyz_sources_df['G mag'].min(), xyz_sources_df['G mag'].min()]
+            var_selected = 'G mag'
+        elif colour_map_var == 'M (G-band)':
+            range_colour = [xyz_sources_df['M (G-band)'].min(), xyz_sources_df['M (G-band)'].min()]
+            var_selected = 'M (G-band)'
+                
+        fig = px.scatter_3d(
+            xyz_sources_df,
+            x='X (pc)', 
+            y='Y (pc)',
+            z='Z (pc)',
+            color=var_selected,  
+            range_color=range_colour,          
+            opacity=0.7,
+            hover_data={'source id': True, 'X (pc)': True, 'Y (pc)': True, 'Z (pc)': True,  'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f'},
+        )        
+        fig.update_traces(marker_size=4)
+        fig.update_layout(scene=dict(xaxis_title='Galactic X (pc)', yaxis_title='Galactic Y (pc)', 
+                          zaxis_title='Galactic Z (pc)'), title=f"Cartesian Sky Space Plot (N={len(xyz_sources_df)})")
+        
+        st.plotly_chart(fig, width=800, height=700)
+        
+    else:
+        st.write("To view the 3D scatter plot, select data file or fetch data to load from Data Source.")
