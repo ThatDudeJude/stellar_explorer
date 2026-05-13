@@ -1,4 +1,5 @@
 import streamlit as st
+from astropy.io import fits
 from astropy.coordinates import SkyCoord
 from astropy.table import Table
 import plotly.express as px
@@ -29,7 +30,7 @@ with sidebar:
         if data_source == 'File Upload':
             # File upload
             
-            file = st.file_uploader("Upload a CSV/FITS file", accept_multiple_files=False, )    
+            file = st.file_uploader("Upload FITS/CSV file", accept_multiple_files=False, )    
             if file:
                 sources_df = load_fits(file)
                 source_is_loaded = True
@@ -113,8 +114,89 @@ with sidebar:
 
 # Tabs for sky map, cmd, hr diagram, 3d xyz plot
 
-sky_map_tab, cmd_tab, hr_tab, distance_tab, three_d_xyz_tab = st.tabs(["Sky Map", "CMD", "HR Diagram", "Distance", "3D XYZ"])
+data_tab, sky_map_tab, cmd_tab, hr_tab, distance_tab, three_d_xyz_tab = st.tabs(["Data and Summary Statistics", "Sky Map", "CMD", "HR Diagram", "Distance", "3D XYZ"])
     
+# Data Tab
+with data_tab:
+    # Header
+    st.header("Data and Summary Statistics")   
+    
+    
+    
+    # # Display query information from metadata
+    # if data_source == 'File Upload' and source_is_loaded:
+    #     st.subheader('ADQL query for the data')
+    #     # Open the downloaded FITS file
+    #     print(file.upload_url)
+    
+
+    if source_is_loaded:
+        # Display the data
+        st.subheader('Data')
+        st.dataframe(sources_df)
+        
+        st.markdown("## Statistics")        
+        
+        st.metric('Number of sources:', len(sources_df))
+        
+        st.markdown('---')
+        # Parallax
+        st.markdown('#### Parallax (mas)')
+        min_parallax_col, max_parallax_col = st.columns(2)
+        
+        with min_parallax_col:
+            st.metric('Minimum', round(sources_df['parallax'].min(), 4))
+        
+        with max_parallax_col:
+            st.metric('Maximum', round(sources_df['parallax'].max(), 4))
+        
+        st.markdown('---')
+        
+        # Mean and Median G-band magnitudes
+        
+        # Apparent magnitude
+        st.markdown('#### Apparent Magnitude (G-band)')
+        
+        # Mean, median, std dev
+        mean_app_mag_col, median_app_mag_col, std_dev_app_mag_col = st.columns(3)
+        with mean_app_mag_col:
+            st.metric("Mean", round(np.mean(sources_df['G mag']), 2))
+        with median_app_mag_col:
+            st.metric("Median", round(np.median(sources_df['G mag']), 2))
+        with std_dev_app_mag_col:
+            st.metric("Standard Deviation", round(np.std(sources_df['G mag']), 2))
+        
+        # Min, max
+        min_app_mag_col, max_app_mag_col, blank_col = st.columns(3)
+        with min_app_mag_col:
+            st.metric("Minimum", round(sources_df['G mag'].min(), 2))
+        
+        with max_app_mag_col:
+            st.metric("Maximum", round(sources_df['G mag'].max(), 2))
+        
+        st.markdown('---')
+        
+        # Absolute magnitude
+        st.markdown('#### Absolute Magnitude (G-band)')
+        mean_abs_mag_col, median_abs_mag_col, std_dev_abs_mag_col = st.columns(3)
+        with mean_abs_mag_col:
+            st.metric("Mean", round(np.mean(sources_df['M (G-band)']), 2))
+        with median_abs_mag_col:
+            st.metric("Median", round(np.median(sources_df['M (G-band)']), 2))
+        with std_dev_abs_mag_col:
+            st.metric("Standard Deviation", round(np.std(sources_df['M (G-band)']), 2))
+
+        # Min, max
+        min_abs_mag_col, max_abs_mag_col, blank_col = st.columns(3)
+        with min_abs_mag_col:
+            st.metric("Minimum", round(sources_df['M (G-band)'].min(), 2))
+        
+        with max_abs_mag_col:
+            st.metric("Maximum", round(sources_df['M (G-band)'].max(), 2))
+        
+        
+        st.markdown('---')
+
 # Sky Map Tab
 with sky_map_tab:        
     
@@ -149,6 +231,13 @@ with sky_map_tab:
                 labels={'ra': 'Right Ascension (&deg;)', 'dec': 'Declination (&deg;)'},
                 title=f'ICRS Sky Map (N={len(sky_map_sources_df)} sources)'            
             )
+            
+            st.plotly_chart(fig, width='stretch')
+            
+            # Add coordinates range
+            
+            st.markdown(f"__ra range__: {sky_map_sources_df['ra'].min()} &deg;   to   {sky_map_sources_df['ra'].max()} &deg;")
+            st.markdown(f"__dec range__: {sky_map_sources_df['dec'].min()} &deg;   to   {sky_map_sources_df['dec'].max()} &deg;")
         
         # Galactic (l/b)
         elif coord_frame == 'Galactic (l/b)':
@@ -163,8 +252,14 @@ with sky_map_tab:
                 labels={'gal b': 'Galactic Longitude (&deg;)', 'gal l': 'Galactic Latitude (&deg;)'},
                 title=f'Galactic Coordinates Sky Map (N={len(sky_map_sources_df)} sources)'
             ) 
+            
+            
+            st.plotly_chart(fig, width='stretch')
+            
+            # Add coordinaetes range
+            st.markdown(f"__l range__: {sky_map_sources_df['gal l'].min()} &deg;   to   {sky_map_sources_df['gal l'].max()} &deg;")
+            st.markdown(f"__b range__: {sky_map_sources_df['gal b'].min()} &deg;   to   {sky_map_sources_df['gal b'].max()} &deg;")
         
-        st.plotly_chart(fig, width='stretch')
             
     else:
         st.write("To view the sky plot, select data file or fetch data to load from Data Source.")
