@@ -358,13 +358,13 @@ with hr_tab:
             # 2D Histogram Contour
             
             # Pick a binning number for both x and y
-            xbins = st.slider("Number of bins for x axis", 2, 100)
-            ybins = st.slider("Number of bins for y axis", 2, 100)
+            xbins = st.slider("Number of x-axis bins", 2, 100)
+            ybins = st.slider("Number of y-axis bins", 2, 100)
             
             fig = go.Figure(
-                go.Histogram2dCounter(
+                go.Histogram2dContour(
                     x=hrd_sources_df['BP-RP'],
-                    y=hrd_sources_df['G mag'],
+                    y=hrd_sources_df['M (G-band)'],
                     z=z_col,
                     histfunc=hist_func,
                     nbinsx=xbins,
@@ -380,7 +380,12 @@ with hr_tab:
                     hovertemplate='Colour: %{x:.2f}<br>Magnitude: %{y:.2f}<br>' + hover_temp_stat + ' %{z:.0f}<extra></extra>',
                 ),
             )
-        
+            
+            # Add title, x-axis label and y-axis label
+
+            fig.update_layout(title=f'Hertzsprung-Russell Diagram with 2D Histogram Contours (N={len(hrd_sources_df)} sources)',
+                              xaxis_title='BP - RP (mag)', yaxis_title='Absolute G-band Magnitude (mag)')
+            
         fig.update_yaxes(autorange="reversed")
         st.plotly_chart(fig, width="stretch")
         
