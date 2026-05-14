@@ -38,12 +38,7 @@ with sidebar:
         elif data_source == 'Live Gaia DR3 ADQL':
             st.write("Fetch with Astroquery")
         else:
-            st.write("Something Went Wrong!")
-    
-    # Selecting coordinate frame for sky map
-    
-    with st.expander("Coordinate Frame"):
-        coord_frame = st.radio("Select Coordinate System", ['ICRS (RA/Dec)', 'Galactic (l/b)'])        
+            st.write("Something Went Wrong!")        
     
     
     # Filtering sources 
@@ -215,12 +210,21 @@ with sky_map_tab:
         # Copy sources data for tab
         sky_map_sources_df = sources_df.copy()        
         
+        # Columns for colour scaling and coordinate selection buttons
+        colour_scale_col, coord_selection_col = st.columns(2)
         
-        # Add radio buttons for selecting colour scaling for normalization 
         
-        scale_option = st.radio("Color Scale", ['Linear (G mag)', 'Log (log(G mag))'])
-        scale_selected = ['G mag' if scale_option == 'Linear (G mag)' else 'log(G mag)'][0]
-        min_val, max_val = [(sky_map_sources_df['G mag'].min(), sky_map_sources_df['G mag'].max()) if scale_option == 'Linear (G mag)' else (sky_map_sources_df['log(G mag)'].min(), sky_map_sources_df['log(G mag)'].max()) ][0]
+        with colour_scale_col:
+            # Selecting colour scaling for normalization 
+            
+            scale_option = st.radio("Color Scale", ['Linear (G mag)', 'Log (log(G mag))'])
+            scale_selected = ['G mag' if scale_option == 'Linear (G mag)' else 'log(G mag)'][0]
+            min_val, max_val = [(sky_map_sources_df['G mag'].min(), sky_map_sources_df['G mag'].max()) if scale_option == 'Linear (G mag)' else (sky_map_sources_df['log(G mag)'].min(), sky_map_sources_df['log(G mag)'].max()) ][0]
+        
+        with coord_selection_col:
+            # Selecting coordinate frame for sky map
+            
+            coord_frame = st.radio("Select Coordinate System", ['ICRS (RA/Dec)', 'Galactic (l/b)'])        
         
         # Check for coordinate type and load appropriate sky map
         
