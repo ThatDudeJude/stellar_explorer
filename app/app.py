@@ -117,7 +117,7 @@ with sidebar:
 
 # Tabs for sky map, cmd, hr diagram, 3d xyz plot
 
-data_tab, sky_map_tab, cmd_tab, hr_tab, distance_tab, three_d_xyz_tab = st.tabs(["Data and Summary Statistics", "Sky Map", "CMD", "HR Diagram", "Distance", "3D XYZ"])
+data_tab, sky_map_tab, cmd_tab, hr_tab, three_d_xyz_tab, distance_tab, corr_test = st.tabs(["Data and Summary Statistics", "Sky Map", "CMD", "HR Diagram", "3D XYZ", "Distance Hist", "Correlation (G vs Distance)"])
     
 # Data Tab
 with data_tab:
@@ -493,6 +493,58 @@ with hr_tab:
     else:
         st.write("To view the Hertzsprung-Russell Diagram, select data file or fetch data to load from Data Source.")
         
+        
+# 3D XYZ Tab
+with three_d_xyz_tab:
+    st.header("3D XYZ Plot")
+    
+    # Confirm data is loaded
+    if data_source == 'File Upload' and source_is_loaded:
+        
+        # Copy sources data for tab
+        xyz_sources_df = sources_df.copy()
+        
+        # Add radio buttons for selecting colour mapping based on parallax, distance, absolute magnitude or none
+                
+        colour_map_var = st.radio("Variable for Colour Points", ['None', 'Parallax (mas)', 'Distance (pc)', 'G (mag)', 'M (G-band)'], key=6)
+        
+        # Update related arguments based on colour map selection
+        if colour_map_var == 'None':
+            range_colour = [0, 0]
+            var_selected = None
+        elif colour_map_var == 'Parallax (mas)':
+            range_colour = [xyz_sources_df['parallax (mas)'].min(), xyz_sources_df['parallax (mas)'].max()]
+            var_selected = 'parallax (mas)'
+        elif colour_map_var == 'Distance (pc)':
+            range_colour = [xyz_sources_df['distance (pc)'].min(), xyz_sources_df['distance (pc)'].max()]
+            var_selected = 'distance (pc)'
+        elif colour_map_var == 'G (mag)':
+            range_colour = [xyz_sources_df['G mag'].min(), xyz_sources_df['G mag'].min()]
+            var_selected = 'G mag'
+        elif colour_map_var == 'M (G-band)':
+            range_colour = [xyz_sources_df['M (G-band)'].min(), xyz_sources_df['M (G-band)'].min()]
+            var_selected = 'M (G-band)'
+                
+        fig = px.scatter_3d(
+            xyz_sources_df,
+            x='X (pc)', 
+            y='Y (pc)',
+            z='Z (pc)',
+            color=var_selected,  
+            range_color=range_colour,          
+            opacity=0.7,
+            hover_data={'source id': True, 'X (pc)': True, 'Y (pc)': True, 'Z (pc)': True,  'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax (mas)': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f'},
+        )        
+        fig.update_traces(marker_size=4)
+        fig.update_layout(scene=dict(xaxis_title='Galactic X (pc)', yaxis_title='Galactic Y (pc)', 
+                          zaxis_title='Galactic Z (pc)'), title=f"Cartesian Sky Space Plot (N={len(xyz_sources_df)})")
+        
+        st.plotly_chart(fig, width=800, height=700)
+        
+    else:
+        st.write("To view the 3D scatter plot, select data file or fetch data to load from Data Source.")
+        
+# Distance Distribution Tab
 with distance_tab:
     st.header("Distance (Parallax)")
     
@@ -557,54 +609,71 @@ with distance_tab:
             st.plotly_chart(fig, width=800, height=700)
     else:
         st.write("To view the distance histogram, select data file or fetch data to load from Data Source.")
-        
-        
-# 3D XYZ Tab
-with three_d_xyz_tab:
-    st.header("3D XYZ Plot")
+
+# Correlation test
+with corr_test:
+    
+    # Header
+    st.header("Correlation between Apparent Magnitude and Distance")
     
     # Confirm data is loaded
     if data_source == 'File Upload' and source_is_loaded:
         
         # Copy sources data for tab
-        xyz_sources_df = sources_df.copy()
+        corr_test_sources_df = sources_df.copy()
         
-        # Add radio buttons for selecting colour mapping based on parallax, distance, absolute magnitude or none
+        # Columns for radio button groups
+        distance_col, colour_map_col = st.columns(2)
+        
+        with distance_col:
+            # Add radio buttons for selecting distance for x axis
+            dist_option = st.radio("x-axis", ['Distance', 'Parallax'], key=7)
+            if dist_option == 'Distance':
+                x_axis = 'distance (pc)'
+            elif dist_option == 'Parallax':
+                x_axis = 'parallax (mas)'
                 
-        colour_map_var = st.radio("Variable for Colour Points", ['None', 'Parallax (mas)', 'Distance (pc)', 'G (mag)', 'M (G-band)'], key=6)
+        with colour_map_col:
+            # Add radio buttons for selecting colour mapping based on absolute magnitude or none
+            colour_map_var = st.radio("Variable for Colour Points", ['None', 'M (G-band)'], key=8)
+            
+            # Updated related arguments based on colour map selection
+            if colour_map_var == 'None':
+                range_colour = [0, 0]
+                var_selected = None
+            elif colour_map_var == 'M (G-band)':
+                range_colour = [corr_test_sources_df['M (G-band)'].min(), corr_test_sources_df['M (G-band)'].min()]
+                var_selected = 'M (G-band)'
+            
+        # Plot according to selected x-axis
+        if x_axis == 'distance (pc)':
+            
+            fig = px.scatter(
+                corr_test_sources_df,
+                x=x_axis,
+                y='G mag',
+                color=var_selected,  
+                range_color=range_colour,          
+                opacity=0.7,
+                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax (mas)': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f', 'X (pc)': False, 'Y (pc)': False, 'Z (pc)': False},
+                labels={'distance (pc)': 'Distance (pc)', 'G mag': 'G (mag)'},
+                title=f'Apparent Magnitude vs {dist_option} (N={len(corr_test_sources_df)})'
+            )
+        elif x_axis == 'parallax (mas)':
+            
+            fig = px.scatter(
+                corr_test_sources_df,
+                x=x_axis,
+                y='G mag',
+                color=var_selected,  
+                range_color=range_colour,          
+                opacity=0.7,
+                hover_data={'source id': True, 'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax (mas)': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f', 'X (pc)': False, 'Y (pc)': False, 'Z (pc)': False},
+                labels={'parallax (mass)': 'Parallax (mas)', 'G mag': 'G (mag)'},
+                title=f'Apparent Magnitude vs {dist_option} (N={len(corr_test_sources_df)})'
+            )
         
-        # Update related arguments based on selection
-        if colour_map_var == 'None':
-            range_colour = [0, 0]
-            var_selected = None
-        elif colour_map_var == 'Parallax (mas)':
-            range_colour = [xyz_sources_df['parallax (mas)'].min(), xyz_sources_df['parallax (mas)'].max()]
-            var_selected = 'parallax (mas)'
-        elif colour_map_var == 'Distance (pc)':
-            range_colour = [xyz_sources_df['distance (pc)'].min(), xyz_sources_df['distance (pc)'].max()]
-            var_selected = 'distance (pc)'
-        elif colour_map_var == 'G (mag)':
-            range_colour = [xyz_sources_df['G mag'].min(), xyz_sources_df['G mag'].min()]
-            var_selected = 'G mag'
-        elif colour_map_var == 'M (G-band)':
-            range_colour = [xyz_sources_df['M (G-band)'].min(), xyz_sources_df['M (G-band)'].min()]
-            var_selected = 'M (G-band)'
-                
-        fig = px.scatter_3d(
-            xyz_sources_df,
-            x='X (pc)', 
-            y='Y (pc)',
-            z='Z (pc)',
-            color=var_selected,  
-            range_color=range_colour,          
-            opacity=0.7,
-            hover_data={'source id': True, 'X (pc)': True, 'Y (pc)': True, 'Z (pc)': True,  'G mag': ':.2f', 'BP-RP': ':.2f', 'parallax (mas)': ':.2f', 'distance (pc)': ':.1f', 'log(G mag)': False, 'M (G-band)': ':.2f'},
-        )        
-        fig.update_traces(marker_size=4)
-        fig.update_layout(scene=dict(xaxis_title='Galactic X (pc)', yaxis_title='Galactic Y (pc)', 
-                          zaxis_title='Galactic Z (pc)'), title=f"Cartesian Sky Space Plot (N={len(xyz_sources_df)})")
         
-        st.plotly_chart(fig, width=800, height=700)
-        
+        st.plotly_chart(fig, width=800, height=600)
     else:
-        st.write("To view the 3D scatter plot, select data file or fetch data to load from Data Source.")
+        st.write("To view the test, select data file or fetch data to load from Data Source.")        
