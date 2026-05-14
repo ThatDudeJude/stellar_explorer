@@ -5,7 +5,7 @@ from astropy.table import Table
 import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
-from utils import load_fits, add_galactic_coords, add_abs_mag, add_distance_pc, add_xyz_galactic
+from utils import load_fits, add_galactic_coords, add_abs_mag, add_distance_pc, add_xyz_galactic, interpret_magnitude_distance_correlation
 
 # Title
 st.title("Stellar Coordinate Explorer")
@@ -672,8 +672,29 @@ with corr_test:
                 labels={'parallax (mass)': 'Parallax (mas)', 'G mag': 'G (mag)'},
                 title=f'Apparent Magnitude vs {dist_option} (N={len(corr_test_sources_df)})'
             )
+                
         
         
+        # Let's perform the hypothesis test with 
+        # h null: There is no relationship between distance and apparent magnitude
+        # h alternative: A negative relationship exists between distance and apparent magnitude
+        # We perform the test using Pearson and Spearman correlation statistics with significance level = 0.05
+                                
+        interpretation, corr = interpret_magnitude_distance_correlation(corr_test_sources_df, mag_col='G mag', parallax_col='parallax (mas)', distance_col='distance (pc)')
+                        
+        fig.add_annotation(
+            xref="paper",
+            yref="paper",
+            x=0.02,
+            y=0.98,
+            showarrow=False,
+            text=f"<b>Pearson r</b> = {corr['pearson_r']:.2f}<br><b>Spearman r</b> = {corr['spearman_r']:.2f}",
+            bgcolor='rgba(0, 0, 0, 0.95)',
+            bordercolor='rgba(36, 17, 120, 1)',
+            align='left'
+        )
         st.plotly_chart(fig, width=800, height=600)
+        
+        st.write(interpretation)
     else:
         st.write("To view the test, select data file or fetch data to load from Data Source.")        
