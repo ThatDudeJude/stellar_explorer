@@ -1,5 +1,5 @@
 # Stellar Coordinate Explorer
-A Python-based astronomy data analysis and visualization project using Gaia DR3 catalog data to explore stellar coordinates, photometric properties, and stellar populations with Python and Astropy.
+A Python-based astronomy data analysis and visualization project using Gaia DR3 catalog data to explore stellar coordinates, photometric properties, and stellar populations with Python and Astropy. 
 
 ---
 
@@ -15,7 +15,7 @@ This project uses real Gaia DR3 data to explore spatial distribution and photome
 ---
 
 ## Main Objective
-Build an interactive astronomy data-analysis and visualization tool for exploring the spatial distribution and photometric properties of nearby Gaia DR3 stellar sources.
+Build an interactive astronomy data-analysis and visualization tool for exploring the spatial distribution and photometric properties of nearby Gaia DR3 stellar sources. The logic behind the main analysis is then used to design a Streamlit dashboard that demonstrates how astronomical datasets can be used to explore photometric and astrometric data interactively.
 
 ## Specific Objectives
 - Load and process real Gaia DR3 catalog data using Astropy.
@@ -34,7 +34,7 @@ Build an interactive astronomy data-analysis and visualization tool for explorin
 - Numpy
 - Matplotlib
 - Jupyter Notebook
-- Streamlit (planned)
+- Streamlit
 
 ---
 
@@ -65,7 +65,7 @@ AND parallax > 5
 ORDER BY random_index
 ```
 
-This approximately limits the sample to sources within $\approx 200$ parsecs of Earth while avoiding artificial sky-coverage patterns, yielding a more representative sample for this project. For comparison, a biased sample was initially obtained by removing the section `ORDER BY random_index` in the ADQL query.
+This approximately limits the sample to sources within $\approx 200$ parsecs of Earth while avoiding artificial sky-coverage patterns, yielding a more representative sample for this project. For analytical comparison, a biased sample was initially obtained by removing the section `ORDER BY random_index` in the ADQL query.
 
 ---
 
@@ -158,6 +158,51 @@ The following figures highlight the spatial distribution and photometric propert
 |`11_histograms_cmds_HR` | Histograms and statistical distributions of random data | 
 |`12_compare_biased_random.ipynb` | Comparing random data stellar position visualizations with biased data|
 |`13_hypothesis_testing.ipynb` | Correlation analysis between magnitude and parallax using random data|
+
+---
+## Interactive Dashboard
+
+The project also includes an interactive Streamlit dashboard for exploratory astronomy data analysis.
+
+Features include:
+- Loading local Gaia datasets (FITS/CSV)
+- Querying the Gaia Archive directly using Astroquery
+- Interactive sky maps in Equitorial and Galactic coordinates
+- Interactive Colour-Magnitude and Hertzsprung-Russel diagrams
+- Interactive XYZ sky map in Cartesian coordinates
+- Dynamic filtering by magnitude and parallax
+- Statistical summaries and correlation analysis
+- Hover-based inspection of stellar properties
+
+The dashboard is designed to demonstrate how scientific survey data can be explored through interactive visualization and reproducible analysis workflows.
+
+### Dashboard Scripts
+Located in `app/`
+
+Main components:
+- `app.py` - Streamlit application entry point
+- Gaia querying and file-loading utilities
+- Coordinate transformation functions
+- Interactive plotting modules
+
+### Running the Dashboard
+Install dependencies:
+```sh
+pip install -r requirements.txt
+```
+
+Launch the streamlit application:
+
+```shell
+streamlit run app/app.py
+```
+
+The dashboard supports:
+- loading local Gaia datasets
+- querying Gaia DR3 archive directly using Astroquery
+- interactive exploration of stellar coordinate and photometric data
+
+
 
 ---
 

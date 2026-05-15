@@ -5,7 +5,7 @@ from astropy.table import Table
 import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
-from utils import load_fits, add_galactic_coords, add_abs_mag, add_distance_pc, add_xyz_galactic, interpret_magnitude_distance_correlation
+from utils import load_fits, add_galactic_coords, add_abs_mag, add_distance_pc, add_xyz_galactic, interpret_magnitude_distance_correlation, load_gaia_data
 
 # Title
 st.title("Stellar Coordinate Explorer")
@@ -36,9 +36,11 @@ with sidebar:
                 sources_df.fillna(np.nan)
                 source_is_loaded = True
         elif data_source == 'Live Gaia DR3 ADQL':
-            st.write("Fetch with Astroquery")
+            sources_df = load_gaia_data()
+            sources_df.fillna(np.nan)
+            source_is_loaded = True
         else:
-            st.write("Something Went Wrong!")        
+            st.write("Something Went Wrong!")                    
     
     
     # Filtering sources 

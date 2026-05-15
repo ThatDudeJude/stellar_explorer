@@ -5,7 +5,10 @@ from astropy.coordinates import SkyCoord
 import astropy.units as u
 from scipy.stats import pearsonr, spearmanr
 import numpy as np
+from astroquery.gaia import Gaia
+import streamlit as st
 
+Gaia.ROW_LIMIT = 10000 # Limit number of queried rows to 10000
 
 def load_fits(file_path_or_buffer_data):
     """
@@ -245,3 +248,77 @@ def interpret_magnitude_distance_correlation(df, mag_col='G mag', parallax_col='
         sentence += "Both correlations are statistically significant, confirming a reliable relationship."
     
     return sentence, results
+
+def build_adql_query():
+    """
+    Query fed to astroquery that fetches the Gaia DR3 archive data
+    
+    Returns
+    -------
+    str
+        ADQL QUery
+    """
+    query = """
+    SELECT TOP 10000
+        source_id,
+        ra,
+        dec,
+        parallax,
+        phot_g_mean_mag,
+        bp_rp        
+    FROM gaiadr3.gaia_source
+    WHERE phot_g_mean_mag < 10
+    AND parallax > 5
+    ORDER BY random_index
+    """
+    return query
+
+def run_gaia_query(query, verbose=True):
+    """
+    Execute an ADQL query on the Gaia DR3 archive using an asynchronous job.
+    Returns an Astropy Table containing the results.
+    
+    Parameters
+    ----------
+    query: str
+        ADQL query
+    
+    verbose: boolean
+        Display information on the query phases and status in streamlit if set to True
+        
+    Returns
+    -------
+    astropy.table or None
+        Table containing query results if successful or None if unsucessful
+    
+    """
+    
+    try:
+        if verbose:
+            st.info("Launching asynchronous job on Gaia archive...")
+        job = Gaia.launch_job_async(query, dump_to_file=False)
+        results = job.get_results()
+        if verbose:
+            st.success(f"Query completed. Retrieved {len(results)} rows.")
+        
+    except Exception as e:
+        st.error(f"Error during Gaia query: {str(e)}")
+        return None
+
+@st.cache_data 
+def load_gaia_data():
+    """
+    Load or query data with full caching.
+    
+    Returns
+    -------
+    pandas.DataFrame or None
+        Returns the queried result from Gaia DR3 as a pandas dataframe or None if data doesn't exist
+    
+    """
+    
+    query = build_adql_query()
+    table = run_gaia_query(query, verbose=True)
+    if table is None:
+        return None
+    return table.to_pandas()
