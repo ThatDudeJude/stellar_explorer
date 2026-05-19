@@ -202,16 +202,21 @@ The dashboard supports:
 - querying Gaia DR3 archive directly using Astroquery
 - interactive exploration of stellar coordinate and photometric data
 
+### Screen Recordings
+#### Data and summary statistics
+![Data and summary statistics tab on the dashboard](./outputs/screen_recordings/data_and_summary_stats.gif)
+#### Colour magnitude diagram
+![Colour magnitude diagram tab on the dashboard](./outputs/screen_recordings/cmd.gif)
+#### Hertzsprung-Russell diagram
+![HR diagram tab on the dashboard](./outputs/screen_recordings/hrd.gif)
+#### XYZ (Cartesian coordinate) sky map
+![XYZ Cartesian coordinate sky map tab on the dashboard](./outputs/screen_recordings/three_d_xyz.gif)
+#### Parallax distribution
+![Parallax distribution tab on the dashboard](./outputs/screen_recordings/parallax_dist.gif)
+#### Correlation analysis 
+![Correlation analysis tab on the dashboard](./outputs/screen_recordings/correlation.gif)
 
-
----
-
-## Next Steps and Planned Features
-- Interactive dashboard using Streamlit
-- Coordinate-system toggle (ICRS &rarr; Galactic)
-- Interactive magnitude filtering
-- Plotly-based interactive sky maps
-- Exportable plots and analysis summaries
+--
 
 ---
 

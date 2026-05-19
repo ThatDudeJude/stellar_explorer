@@ -124,7 +124,7 @@ with data_tab:
     
     
     # # Display query information from metadata
-    # if data_source == 'File Upload' and source_is_loaded:
+    # if source_is_loaded:
     #     st.subheader('ADQL query for the data')
     #     # Open the downloaded FITS file
     #     print(file.upload_url)
@@ -134,7 +134,24 @@ with data_tab:
         # Display the data
         st.subheader('Data')
         st.dataframe(sources_df)
-        
+        st.markdown("""
+                  | Column     |  Description |
+                  |------------|--------------|
+                  | `source_id`  |  Identifies the source          |
+                  | `ra`    | Right ascension in the ICRS coordinate frame in degrees) |
+                  | `dec`   | Declination in the ICRS coordinate frame in degrees |
+                  | `parallax (mas)` | Estimates distance to the source |
+                  |`G mag`  | Mean G-band magnitude  |
+                  |`BP-RP` | Colour-index computed by the difference between the integrated magnitude in the blue and red photometer |
+                  |`gal l` | Longitude in galactic coordinate frame (computed)| 
+                  |`gal b` | Latitude in galactic coordinate frame (computed)|
+                  | `M (G-band)` | Absolute magnitude in the G band (computed)|
+                  | `distance (pc)` | Distance to the source (computed) |                  
+                  | `X (pc)` | Position in the X axis in Cartesian coordinates (computed)   |
+                  | `Y (pc)` | Position in the Y axis in Cartesian coordinates (computed)   |
+                  | `Z (pc)` | Position in the Z axis in Cartesian coordinates (computed)   |
+                    
+                    """)
         st.markdown("## Statistics")        
         
         st.metric('Number of sources:', len(sources_df))
@@ -207,7 +224,7 @@ with sky_map_tab:
     st.header("Sky Map")
     
     # Confirm data is loaded
-    if data_source == 'File Upload' and source_is_loaded:
+    if source_is_loaded:
         
         # Copy sources data for tab
         sky_map_sources_df = sources_df.copy()        
@@ -281,7 +298,7 @@ with cmd_tab:
     st.header("Colour-Magnitude Diagram")    
         
     # Confirm data is loaded
-    if data_source == 'File Upload' and source_is_loaded:
+    if source_is_loaded:
                 
         # Copy sources data for tab
         cmd_sources_df = sources_df.copy()                                                                
@@ -378,6 +395,9 @@ with cmd_tab:
                     hovertemplate='Colour: %{x:.2f}<br>Magnitude: %{y:.2f}<br>' + hover_temp_stat + ' %{z:.0f}<extra></extra>',                    
                 ),                
             )
+            
+            fig.update_layout(title=f'Colour Magnitude Diagram with 2D Histogram Contours (N={len(cmd_sources_df)} sources)',
+                              xaxis_title='BP - RP (mag)', yaxis_title='G (mag)')
         fig.update_yaxes(autorange="reversed")
         
         
@@ -390,10 +410,10 @@ with cmd_tab:
 # HR Diagram Tab
     
 with hr_tab:
-    st.header("Hertzsprung-Russel Diagram")
+    st.header("Hertzsprung-Russell Diagram")
     
     # Confirm data is loaded
-    if data_source == 'File Upload' and source_is_loaded:
+    if source_is_loaded:
         
         # Copy sources data for tab
         hrd_sources_df = sources_df.copy()
@@ -505,7 +525,7 @@ with three_d_xyz_tab:
     st.header("3D XYZ Plot")
     
     # Confirm data is loaded
-    if data_source == 'File Upload' and source_is_loaded:
+    if source_is_loaded:
         
         # Copy sources data for tab
         xyz_sources_df = sources_df.copy()
@@ -555,7 +575,7 @@ with distance_tab:
     st.header("Distance (Parallax)")
     
     # Confirm data is loaded
-    if data_source == 'File Upload' and source_is_loaded:
+    if source_is_loaded:
         
         # Copy sources data for tab
         distance_sources_df = sources_df.copy()
@@ -623,7 +643,7 @@ with corr_test:
     st.header("Correlation between Apparent Magnitude and Distance")
     
     # Confirm data is loaded
-    if data_source == 'File Upload' and source_is_loaded:
+    if source_is_loaded:
         
         # Copy sources data for tab
         corr_test_sources_df = sources_df.copy()

@@ -3,3 +3,10 @@ app/learning_*
 app/example_*
 *.html
 */__pycache__
+outputs/screen_recordings/cmd
+outputs/screen_recordings/correlation
+outputs/screen_recordings/data_and_summary_stats
+outputs/screen_recordings/hrd
+outputs/screen_recordings/parallax_dist
+outputs/screen_recordings/sky_map
+outputs/screen_recordings/three_d_xyz
